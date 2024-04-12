@@ -102,6 +102,152 @@ RealGradient FE<2,NEDELEC_ONE>::shape(const Elem * elem,
           }
       }
 
+
+    case SECOND:
+      {
+        switch (elem->type())
+          {
+          case QUAD9:
+            {
+              libmesh_assert_less (i, 12);
+
+              const Real xi  = p(0);
+              const Real eta = p(1);
+
+              // Even with a loose inverse_map tolerance we ought to
+              // be nearly on the element interior in master
+              // coordinates
+              libmesh_assert_less_equal ( std::fabs(xi), 1.0+10*TOLERANCE );
+              libmesh_assert_less_equal ( std::fabs(eta), 1.0+10*TOLERANCE );
+
+              Real x = 0.5 * (xi + 1.0);
+              Real y = 0.5 * (eta + 1.0);
+
+              switch(i)
+                {
+                case 0:
+                  {
+                    if (elem->point(0) > elem->point(1))
+                        return RealGradient(-9.0*x*y*y+12*x*y-3*x+6*y*y-8*y+2, 0.0);
+                    else
+                        return RealGradient( 9.0*x*y*y-12*x*y+3*x-6*y*y+8*y-2, 0.0);
+                  }
+                case 1:
+                  {
+                    if (elem->point(0) > elem->point(1))
+                      return RealGradient( 9.0*x*y*y-12*x*y+3*x-3*y*y+4*y-1, 0.0);
+                    else
+                      return RealGradient(-9.0*x*y*y+12*x*y-3*x+3*y*y-4*y+1, 0.0);
+                  }
+
+                case 2:
+                  {
+                    if (elem->point(1) > elem->point(2))
+                        return RealGradient(0.0,  x*(-9*x*y+6*x+6*y-4));
+                    else
+                        return RealGradient(0.0,  x*( 9*x*y-6*x-6*y+4));
+                  }
+                case 3:
+                  {
+                    if (elem->point(1) > elem->point(2))
+                      return RealGradient(0.0, x*( 9*x*y-3*x-6*y+2));
+                    else
+                      return RealGradient(0.0, x*(-9*x*y+3*x+6*y-2));
+                  }
+
+                case 4:
+                  {
+                    if (elem->point(2) > elem->point(3))
+                      return RealGradient(y*(-9.0*x*y+6*x+6*y-4), 0.0);
+                    else
+                      return RealGradient(y*( 9.0*x*y-6*x-6*y+4), 0.0);
+                  }
+                case 5:
+                  {
+                    if (elem->point(2) > elem->point(3))
+                      return RealGradient(y*( 9.0*x*y-6*x-3*y+2), 0.0);
+                    else
+                      return RealGradient(y*(-9.0*x*y+6*x+3*y-2), 0.0);
+                  }
+
+                case 6:
+                  {
+                    if (elem->point(3) > elem->point(0))
+                      return RealGradient(0.0, -9*x*x*y+6*x*x+12*x*y-8*x-3*y+2);
+                    else
+                      return RealGradient(0.0,  9*x*x*y-6*x*x-12*x*y+8*x+3*y-2);
+                  }
+
+                case 7:
+                  {
+                    if (elem->point(3) > elem->point(0))
+                      return RealGradient(0.0,  9*x*x*y-3*x*x-12*x*y+4*x+3*y-1);
+                    else
+                      return RealGradient(0.0, -9*x*x*y+3*x*x+12*x*y-4*x-3*y+1);
+                  }
+
+                case 8:
+                    return RealGradient(0.0,  3*x*(3*x*y-2*x-3*y+2));
+                
+                case 9:
+                    return RealGradient(3*y*(-3*x*y+3*x+2*y-2), 0.0);
+                
+                case 10:
+                    return RealGradient(3*y*(3*x*y-3*x-y+1), 0.0);
+                
+                case 11:
+                    return RealGradient(0.0,  3*x*(-3*x*y+x+3*y-1));
+
+                default:
+                  libmesh_error_msg("Invalid i = " << i);
+                }
+
+              return RealGradient();
+            }
+
+          case TRI6:
+          case TRI7:
+            {
+              const Real xi  = p(0);
+              const Real eta = p(1);
+
+              libmesh_assert_less (i, 3);
+
+              switch(i)
+                {
+                case 0:
+                  {
+                    if (elem->point(0) > elem->point(1))
+                      return RealGradient( -1.0+eta, -xi);
+                    else
+                      return RealGradient( 1.0-eta, xi);
+                  }
+                case 1:
+                  {
+                    if (elem->point(1) > elem->point(2))
+                      return RealGradient( eta, -xi);
+                    else
+                      return RealGradient( -eta, xi);
+                  }
+
+                case 2:
+                  {
+                    if (elem->point(2) > elem->point(0))
+                      return RealGradient( eta, -xi+1.0);
+                    else
+                      return RealGradient( -eta, xi-1.0);
+                  }
+
+                default:
+                  libmesh_error_msg("Invalid i = " << i);
+                }
+            }
+            
+          default:
+            libmesh_error_msg("ERROR: Unsupported 2D element type!: " << Utility::enum_to_string(elem->type()));
+          }
+      }
+
       // unsupported order
     default:
       libmesh_error_msg("ERROR: Unsupported 2D FE order!: " << total_order);
@@ -141,7 +287,7 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                                             const Order order,
                                             const unsigned int i,
                                             const unsigned int j,
-                                            const Point &,
+                                            const Point & p,
                                             const bool add_p_level)
 {
 #if LIBMESH_DIM > 1
@@ -224,6 +370,246 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                 }
             }
 
+
+          default:
+            libmesh_error_msg("ERROR: Unsupported 2D element type!: " << Utility::enum_to_string(elem->type()));
+          }
+      }
+    case SECOND:
+      {
+        switch (elem->type())
+          {
+          case QUAD9:
+            {
+              libmesh_assert_less (i, 12);
+              
+              const Real xi  = p(0);
+              const Real eta = p(1);
+
+              // Even with a loose inverse_map tolerance we ought to
+              // be nearly on the element interior in master
+              // coordinates
+              libmesh_assert_less_equal ( std::fabs(xi), 1.0+10*TOLERANCE );
+              libmesh_assert_less_equal ( std::fabs(eta), 1.0+10*TOLERANCE );
+
+              Real x = 0.5 * (xi + 1.0);
+              Real y = 0.5 * (eta + 1.0);
+
+              switch (j)
+                {
+                  // d()/dxi
+                case 0:
+                  {
+                    switch(i)
+                      {
+                       case 0:
+                         {
+                            if (elem->point(0) > elem->point(1))
+                              return RealGradient(0.5*(-9*y*y+12*y-3), 0.0);
+                            else
+                              return RealGradient(0.5*( 9*y*y-12*y+3), 0.0);
+                          }
+                      case 1:
+                        {
+                          if (elem->point(0) > elem->point(1))
+                            return RealGradient(0.5*( 9.0*y*y-12*y+3), 0.0);
+                          else
+                            return RealGradient(0.5*(-9.0*y*y+12*y-3), 0.0);
+                        }
+                      case 2:
+                       {
+                          if (elem->point(1) > elem->point(2))
+                            return RealGradient(0.0, 0.5*(-18*x*y+12*x+6*y));
+                          else
+                            return RealGradient(0.0, 0.5*( 18*x*y-12*x-6*y));
+                        }
+                      case 3:
+                        {
+                          if (elem->point(1) > elem->point(2))
+                            return RealGradient(0.0, 0.5*( 18*x*y-6*x-6*y));
+                          else
+                            return RealGradient(0.0, 0.5*(-18*x*y+6*x+6*y));
+                        }
+                    case 4:
+                        {
+                          if (elem->point(2) > elem->point(3))
+                            return RealGradient(0.5*(-9.0*y*y+6*y), 0.0 );
+                          else
+                            return RealGradient(0.5*( 9.0*y*y-6*y), 0.0 );
+                        }
+                    case 5:
+                        {
+                          if (elem->point(2) > elem->point(3))
+                            return RealGradient(0.5*( 9.0*y*y-6*y), 0.0);
+                          else
+                            return RealGradient(0.5*(-9.0*y*y+6*y), 0.0 );
+                        }
+                    case 6:
+                       {
+                        if (elem->point(3) > elem->point(0))
+                          return RealGradient(0.0, 0.5*(-18*x*y+12*x+12*y-8));
+                        else
+                          return RealGradient(0.0, 0.5*( 18*x*y-12*x-12*y+8));
+                       }
+                    case 7:
+                       {
+                        if (elem->point(3) > elem->point(0))
+                          return RealGradient(0.0,  0.5*( 18*x*y-6*x-12*y+4));
+                        else
+                          return RealGradient(0.0,  0.5*(-18*x*y+6*x+12*y-4));
+                       }
+                    case 8:
+                      return RealGradient(0.0,  1.5*(6*x*y-4*x-3*y+2));
+
+                    case 9:
+                      return RealGradient(1.5*y*(-3*y+3), 0.0);
+    
+                    case 10:
+                      return RealGradient(1.5*y*(3*y-3), 0.0);
+                
+                    case 11:
+                      return RealGradient(0.0,  1.5*(-6*x*y+2*x+3*y-1));
+                      
+                      default:
+                        libmesh_error_msg("Invalid i = " << i);
+                      }
+                  } // j = 0
+
+                  // d()/deta
+                case 1:
+                  {
+                    switch(i)
+                      {
+                       case 0:
+                         {
+                            if (elem->point(0) > elem->point(1))
+                              return RealGradient(0.5*(-18.0*x*y+12*x+12*y-8), 0.0);
+                            else
+                              return RealGradient(0.5*( 18.0*x*y-12*x-12*y+8), 0.0);
+                          }
+                        case 1:
+                          {
+                            if (elem->point(0) > elem->point(1))
+                              return RealGradient(0.5*( 18.0*x*y-12*x-6*y+4), 0.0);
+                            else
+                              return RealGradient(0.5*(-18.0*x*y+12*x+6*y-4), 0.0);
+                          }
+                        case 2:
+                          {
+                            if (elem->point(1) > elem->point(2))
+                              return RealGradient(0.0, 0.5*x*(-9*x+6));
+                            else
+                              return RealGradient(0.0, 0.5*x*( 9*x-6));
+                          }
+                        case 3:
+                          {
+                            if (elem->point(1) > elem->point(2))
+                              return RealGradient(0.0, 0.5*x*( 9*x-6));
+                            else
+                              return RealGradient(0.0, 0.5*x*(-9*x+6));
+                          }
+                        case 4:
+                          {
+                            if (elem->point(2) > elem->point(3))
+                              return RealGradient(0.5*(-18.0*x*y+6*x+12*y-4), 0.0 );
+                            else
+                              return RealGradient(0.5*( 18.0*x*y-6*x-12*y+4), 0.0 );
+                          }
+                        case 5:
+                          {
+                            if (elem->point(2) > elem->point(3))
+                              return RealGradient(0.5*( 18.0*x*y-6*x-6*y+2), 0.0);
+                            else
+                              return RealGradient(0.5*(-18.0*x*y+6*x+6*y-2), 0.0);
+                          }
+                        case 6:
+                          {
+                           if (elem->point(3) > elem->point(0))
+                            return RealGradient(0.0, 0.5*(-9*x*x+12*x-3));
+                          else
+                            return RealGradient(0.0, 0.5*( 9*x*x-12*x+3));
+                         }
+                        case 7:
+                          {
+                            if (elem->point(3) > elem->point(0))
+                              return RealGradient(0.0,  0.5*( 9*x*x-12*x+3));
+                            else
+                              return RealGradient(0.0,  0.5*(-9*x*x+12*x-3));
+                          }
+                        case 8:
+                          return RealGradient(0.0,  1.5*x*(3*x-3));
+
+                        case 9:
+                          return RealGradient(1.5*(-6*x*y+3*x+4*y-2), 0.0);
+  
+                       case 10:
+                          return RealGradient(1.5*(6*x*y-3*x-2*y+1), 0.0);
+                
+                        case 11:
+                          return RealGradient(0.0, 1.5*x*(-3*x+3));
+                     
+                        default:
+                          libmesh_error_msg("Invalid i = " << i);
+                      }
+                  } // j = 1
+
+                default:
+                  libmesh_error_msg("Invalid j = " << j);
+                }
+
+              return RealGradient();
+            }
+
+          case TRI6:
+          case TRI7:
+            {
+              libmesh_assert_less (i, 3);
+
+              // Account for edge flipping
+              Real f = 1.0;
+
+              switch(i)
+                {
+                case 0:
+                  {
+                    if (elem->point(0) > elem->point(1))
+                      f = -1.0;
+                    break;
+                  }
+                case 1:
+                  {
+                    if (elem->point(1) > elem->point(2))
+                      f = -1.0;
+                    break;
+                  }
+                case 2:
+                  {
+                    if (elem->point(2) > elem->point(0))
+                      f = -1.0;
+                    break;
+                  }
+                default:
+                  libmesh_error_msg("Invalid i = " << i);
+                }
+
+              switch (j)
+                {
+                  // d()/dxi
+                case 0:
+                  {
+                    return RealGradient( 0.0, f*1.0);
+                  }
+                  // d()/deta
+                case 1:
+                  {
+                    return RealGradient( f*(-1.0) );
+                  }
+                default:
+                  libmesh_error_msg("Invalid j = " << j);
+                }
+            }
+
+
           default:
             libmesh_error_msg("ERROR: Unsupported 2D element type!: " << Utility::enum_to_string(elem->type()));
           }
@@ -273,7 +659,7 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
                                                    const Order order,
                                                    const unsigned int libmesh_dbg_var(i),
                                                    const unsigned int libmesh_dbg_var(j),
-                                                   const Point &,
+                                                   const Point & p,
                                                    const bool add_p_level)
 {
 #if LIBMESH_DIM > 1
@@ -314,6 +700,286 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
 
           } // end switch (type)
       } // end case FIRST
+
+
+    case SECOND:
+      {
+        switch (elem->type())
+          {
+          case QUAD9:
+            {
+              libmesh_assert_less (i, 12);
+              
+              const Real xi  = p(0);
+              const Real eta = p(1);
+
+              // Even with a loose inverse_map tolerance we ought to
+              // be nearly on the element interior in master
+              // coordinates
+              libmesh_assert_less_equal ( std::fabs(xi), 1.0+10*TOLERANCE );
+              libmesh_assert_less_equal ( std::fabs(eta), 1.0+10*TOLERANCE );
+
+              Real x = 0.5 * (xi + 1.0);
+              Real y = 0.5 * (eta + 1.0);
+
+              switch (j)
+                {
+                  //d^2 () / dxi^2
+                case 0:
+                  {
+                    switch(i)
+                      {
+                       case 0:
+                         {
+                            if (elem->point(0) > elem->point(1))
+                              return RealGradient(0.0, 0.0);
+                            else
+                              return RealGradient(0.0, 0.0);
+                          }
+                      case 1:
+                        {
+                          if (elem->point(0) > elem->point(1))
+                            return RealGradient(0.0, 0.0);
+                          else
+                            return RealGradient(0.0, 0.0);
+                        }
+                      case 2:
+                        {
+                          if (elem->point(1) > elem->point(2))
+                            return RealGradient(0.0, 0.25*(-18*y+12));
+                          else
+                            return RealGradient(0.0, 0.25*( 18*y-12));
+                        }
+                      case 3:
+                        {
+                          if (elem->point(1) > elem->point(2))
+                            return RealGradient(0.0, 0.25*( 18*y-6));
+                          else
+                            return RealGradient(0.0, 0.25*(-18*y+6));
+                        }
+                    case 4:
+                        {
+                          if (elem->point(2) > elem->point(3))
+                            return RealGradient(0.0, 0.0 );
+                          else
+                            return RealGradient(0.0, 0.0 );
+                        }
+                    case 5:
+                        {
+                          if (elem->point(2) > elem->point(3))
+                            return RealGradient(0.0, 0.0);
+                          else
+                            return RealGradient(0.0, 0.0 );
+                        }
+                    case 6:
+                       {
+                        if (elem->point(3) > elem->point(0))
+                          return RealGradient(0.0, 0.25*(-18*y+12));
+                        else
+                          return RealGradient(0.0, 0.25*( 18*y-12));
+                       }
+                    case 7:
+                       {
+                        if (elem->point(3) > elem->point(0))
+                          return RealGradient(0.0,  0.25*( 18*y-6));
+                        else
+                          return RealGradient(0.0,  0.25*(-18*y+6));
+                       }
+                    case 8:
+                      return RealGradient(0.0,  0.75*(6*y-4));
+
+                    case 9:
+                      return RealGradient(0.0, 0.0);
+    
+                    case 10:
+                      return RealGradient(0.0, 0.0);
+                
+                    case 11:
+                      return RealGradient(0.0,  0.75*(-6*y+2));
+                      
+                      default:
+                        libmesh_error_msg("Invalid i = " << i);
+                      }
+                  } // j = 0
+
+                  // ^2()/dxi deta
+                case 1:
+                  {
+                    switch(i)
+                      {
+                       case 0:
+                         {
+                            if (elem->point(0) > elem->point(1))
+                              return RealGradient(0.25*(-18*y+12), 0.0);
+                            else
+                              return RealGradient(0.25*( 18*y-12), 0.0);
+                          }
+                      case 1:
+                        {
+                          if (elem->point(0) > elem->point(1))
+                            return RealGradient(0.25*( 18.0*y-12), 0.0);
+                          else
+                            return RealGradient(0.25*(-18.0*y+12), 0.0);
+                        }
+                      case 2:
+                       {
+                          if (elem->point(1) > elem->point(2))
+                            return RealGradient(0.0, 0.25*(-18*x+6));
+                          else
+                            return RealGradient(0.0, 0.25*( 18*x-6));
+                        }
+                      case 3:
+                        {
+                          if (elem->point(1) > elem->point(2))
+                            return RealGradient(0.0, 0.25*( 18*x-6));
+                          else
+                            return RealGradient(0.0, 0.25*(-18*x+6));
+                        }
+                    case 4:
+                        {
+                          if (elem->point(2) > elem->point(3))
+                            return RealGradient(0.25*(-18.0*y+6), 0.0);
+                          else
+                            return RealGradient(0.25*( 18.0*y-6), 0.0);
+                        }
+                    case 5:
+                        {
+                          if (elem->point(2) > elem->point(3))
+                            return RealGradient(0.25*( 18.0*y-6), 0.0);
+                          else
+                            return RealGradient(0.25*(-18.0*y+6), 0.0);
+                        }
+                    case 6:
+                       {
+                        if (elem->point(3) > elem->point(0))
+                          return RealGradient(0.0, 0.25*(-18*x+12));
+                        else
+                          return RealGradient(0.0, 0.25*( 18*x-12));
+                       }
+                    case 7:
+                       {
+                        if (elem->point(3) > elem->point(0))
+                          return RealGradient(0.0,  0.25*( 18*x-12));
+                        else
+                          return RealGradient(0.0,  0.25*(-18*x+12));
+                       }
+                    case 8:
+                      return RealGradient(0.0,  0.75*(6*x-3));
+
+                    case 9:
+                      return RealGradient(0.75*(-6*y), 0.0);
+    
+                    case 10:
+                      return RealGradient(0.75*(6*y), 0.0);
+                
+                    case 11:
+                      return RealGradient(0.0, 0.75*(-6*x+3));
+                      
+                      default:
+                        libmesh_error_msg("Invalid i = " << i);
+                      }
+                  } // j = 1
+
+                    //d^2 () / deta^2
+                case 2:
+                  {
+                    switch(i)
+                      {
+                       case 0:
+                         {
+                            if (elem->point(0) > elem->point(1))
+                              return RealGradient(0.25*(-18.0*x+12), 0.0);
+                            else
+                              return RealGradient(0.25*( 18.0*x-12), 0.0);
+                          }
+                        case 1:
+                          {
+                            if (elem->point(0) > elem->point(1))
+                              return RealGradient(0.25*( 18.0*x-6), 0.0);
+                            else
+                              return RealGradient(0.25*(-18.0*x+6), 0.0);
+                          }
+                        case 2:
+                          {
+                            if (elem->point(1) > elem->point(2))
+                              return RealGradient(0.0,  0.0);
+                            else
+                              return RealGradient(0.0,  0.0);
+                          }
+                        case 3:
+                          {
+                            if (elem->point(1) > elem->point(2))
+                              return RealGradient(0.0, 0.0);
+                            else
+                              return RealGradient(0.0, 0.0);
+                          }
+                        case 4:
+                          {
+                            if (elem->point(2) > elem->point(3))
+                              return RealGradient(0.25*(-18.0*x+12), 0.0 );
+                            else
+                              return RealGradient(0.25*( 18.0*x-12), 0.0 );
+                          }
+                        case 5:
+                          {
+                            if (elem->point(2) > elem->point(3))
+                              return RealGradient(0.25*( 18.0*x-6), 0.0);
+                            else
+                              return RealGradient(0.25*(-18.0*x+6), 0.0);
+                          }
+                        case 6:
+                          {
+                           if (elem->point(3) > elem->point(0))
+                            return RealGradient(0.0, 0.0);
+                          else
+                            return RealGradient(0.0, 0.0);
+                         }
+                        case 7:
+                          {
+                            if (elem->point(3) > elem->point(0))
+                              return RealGradient(0.0, 0.0);
+                            else
+                              return RealGradient(0.0, 0.0);
+                          }
+                        case 8:
+                          return RealGradient(0.0, 0.0);
+
+                        case 9:
+                          return RealGradient(0.75*(-6*x+4), 0.0);
+  
+                       case 10:
+                          return RealGradient(0.75*(6*x-2), 0.0);
+                
+                        case 11:
+                          return RealGradient(0.0, 0.0);
+                     
+                        default:
+                          libmesh_error_msg("Invalid i = " << i);
+                      }
+                  } // j = 2
+
+                default:
+                  libmesh_error_msg("Invalid j = " << j);
+                }
+              return RealGradient();
+            }
+
+          case TRI6:
+          case TRI7:
+            {
+              libmesh_assert_less (i, 3);
+              // All second derivatives for linear triangles are zero.
+              return RealGradient();
+            }
+
+          default:
+            libmesh_error_msg("ERROR: Unsupported 2D element type!: " << Utility::enum_to_string(elem->type()));
+
+          } // end switch (type)
+      } // end case FIRST
+
+
+
 
       // unsupported order
     default:
