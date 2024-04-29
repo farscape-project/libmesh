@@ -39,8 +39,10 @@ LIBMESH_DEFAULT_VECTORIZED_FE(3,NEDELEC_ONE)
 
 // Anonymous namespace for local helper functions
 namespace {
-// Forward-declare nedelec_one_n_dofs for immediate use
+// Forward-declarations to avoid reordering definitions
 unsigned int nedelec_one_n_dofs(const ElemType, const Order);
+unsigned int nedelec_one_n_dofs_at_node(const ElemType, const Order, unsigned int);
+unsigned int nedelec_one_n_dofs_per_elem(const ElemType, const Order);
 
 
 void nedelec_one_nodal_soln(const Elem * elem,
@@ -101,30 +103,12 @@ void nedelec_one_nodal_soln(const Elem * elem,
 
 unsigned int nedelec_one_n_dofs(const ElemType t, const Order o)
 {
-  libmesh_assert_greater (o, 0);
-  switch (t)
-    {
-    case TRI6:
-    case TRI7:
-      return o*(o+2);
-    case QUAD8:
-    case QUAD9:
-      return 2*o*(o+1);
-    case TET10:
-      libmesh_assert_less (o, 2);
-      libmesh_fallthrough();
-    case TET14:
-      return o*(o+2)*(o+3)/2;
-    case HEX20:
-      libmesh_assert_less (o, 2);
-      libmesh_fallthrough();
-    case HEX27:
-      return 3*o*(o+1)*(o+1);
-    case INVALID_ELEM:
-      return 0;
-    default:
-      libmesh_error_msg("ERROR: Invalid ElemType " << Utility::enum_to_string(t) << " selected for NEDELEC_ONE FE family!");
-    }
+  unsigned int n_dofs = nedelec_one_n_dofs_per_elem(t, o);
+
+  for (unsigned int n = 0; n < Elem::type_to_n_nodes_map[t]; n++)
+    n_dofs += nedelec_one_n_dofs_at_node(t, o, n);
+
+  return n_dofs;
 }
 
 
