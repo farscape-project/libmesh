@@ -419,16 +419,16 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                       case 2:
                        {
                           if (elem->point(1) > elem->point(2))
-                            return RealGradient(0.0, 0.5*(-18*x*y+12*x+6*y));
+                            return RealGradient(0.0, 0.5*(-18*x*y+12*x+6*y-4));
                           else
-                            return RealGradient(0.0, 0.5*( 18*x*y-12*x-6*y));
+                            return RealGradient(0.0, 0.5*( 18*x*y-12*x-6*y+4));
                         }
                       case 3:
                         {
                           if (elem->point(1) > elem->point(2))
-                            return RealGradient(0.0, 0.5*( 18*x*y-6*x-6*y));
+                            return RealGradient(0.0, 0.5*( 18*x*y-6*x-6*y+2));
                           else
-                            return RealGradient(0.0, 0.5*(-18*x*y+6*x+6*y));
+                            return RealGradient(0.0, 0.5*(-18*x*y+6*x+6*y-2));
                         }
                     case 4:
                         {
