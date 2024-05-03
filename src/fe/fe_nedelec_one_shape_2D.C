@@ -143,13 +143,13 @@ RealGradient FE<2,NEDELEC_ONE>::shape(const Elem * elem,
                 case 7:
                   return sign(elem->point(3), elem->point(0)) * RealGradient(0.0, 0.5*(-18.0*x*x*y+6.0*x*x+24.0*x*y-8.0*x-6.0*y+2.0));
                 case 8:
-                    return RealGradient(0.0, 3.0*x*(3*x*y-2.0*x-3.0*y+2.0));
+                  return RealGradient(0.0, 3.0*x*(3*x*y-2.0*x-3.0*y+2.0));
                 case 9:
-                    return RealGradient(3.0*y*(-3.0*x*y+3.0*x+2.0*y-2.0), 0.0);
+                  return RealGradient(3.0*y*(-3.0*x*y+3.0*x+2.0*y-2.0), 0.0);
                 case 10:
-                    return RealGradient(3.0*y*(3.0*x*y-3.0*x-y+1.0), 0.0);
+                  return RealGradient(3.0*y*(3.0*x*y-3.0*x-y+1.0), 0.0);
                 case 11:
-                    return RealGradient(0.0, 3.0*x*(-3.0*x*y+x+3.0*y-1.0));
+                  return RealGradient(0.0, 3.0*x*(-3.0*x*y+x+3.0*y-1.0));
 
                 default:
                   libmesh_error_msg("Invalid i = " << i);
