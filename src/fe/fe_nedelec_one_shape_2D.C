@@ -332,6 +332,7 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
       {
         switch (elem->type())
           {
+          case QUAD8:
           case QUAD9:
             {
               libmesh_assert_less (i, 12);
@@ -573,6 +574,7 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
       {
         switch (elem->type())
           {
+          case QUAD8:
           case QUAD9:
             {
               libmesh_assert_less (i, 12);
