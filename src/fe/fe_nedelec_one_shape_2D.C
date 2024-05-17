@@ -708,10 +708,95 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
           case TRI6:
           case TRI7:
             {
-              libmesh_assert_less (i, 3);
-              // All second derivatives for linear triangles are zero.
+              libmesh_assert_less (i, 8);
+              
+              const Real xi  = p(0);
+              const Real eta = p(1);
+
+              switch (j)
+                {
+                  //d^2 () / dxi^2
+                case 0:
+                  {
+                    switch(i)
+                      {
+                      case 3:
+                      case 4:
+                        return RealGradient();
+                      case 0:
+                        return sign(elem->point(0), elem->point(1)) * RealGradient(0.0, -16.0);
+                      case 1:
+                        return sign(elem->point(0), elem->point(1)) * RealGradient(0.0, 16.0);
+                      case 2:
+                        return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 16.0);
+                      case 5:
+                        return sign(elem->point(2), elem->point(0)) * RealGradient(0.0, -16.0);
+                      case 6:
+                        return RealGradient(0.0, 16.0);
+                      case 7:
+                        return RealGradient(0.0,-32.0);       
+                      default:
+                        libmesh_error_msg("Invalid i = " << i);
+                      }
+                  } // j = 0
+
+                  // ^2()/dxi deta
+                case 1:
+                  {
+                    switch(i)
+                      {
+                      case 0:
+                        return sign(elem->point(0), elem->point(1)) * RealGradient( 8.0, -8.0);
+                      case 1:
+                        return sign(elem->point(0), elem->point(1)) * RealGradient(-8.0, 0.0);
+                      case 2:
+                        return sign(elem->point(1), elem->point(2)) * RealGradient(-8.0, 0.0);
+                      case 3:
+                        return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 8.0);
+                      case 4:
+                        return sign(elem->point(2), elem->point(0)) * RealGradient(0.0, 8.0);
+                      case 5:
+                        return sign(elem->point(2), elem->point(0)) * RealGradient(8.0, -8.0);
+                      case 6:
+                        return RealGradient(-8.0, 16.0);
+                      case 7:
+                        return RealGradient( 16.0, -8.0);
+                      default:
+                        libmesh_error_msg("Invalid i = " << i);
+                      }
+                  } // j = 1
+
+                    //d^2 () / deta^2
+                case 2:
+                  {
+                    switch(i)
+                      {
+                      case 1:
+                      case 2:
+                        return RealGradient();
+                      case 0:
+                        return sign(elem->point(0), elem->point(1)) * RealGradient(16.0, 0.0);
+                      case 3:
+                        return sign(elem->point(1), elem->point(2)) * RealGradient(-16.0, 0.0);
+                      case 4:
+                        return sign(elem->point(2), elem->point(0)) * RealGradient(-16.0, 0.0);
+                      case 5:
+                        return sign(elem->point(2), elem->point(0)) * RealGradient( 16, 0.0);
+                      case 6:
+                        return RealGradient(-32.0, 0.0);
+                      case 7:
+                        return RealGradient( 16.0, 0.0);
+                      default:
+                        libmesh_error_msg("Invalid i = " << i);
+                      }
+                  } // j = 2
+
+                default:
+                  libmesh_error_msg("Invalid j = " << j);
+                }
               return RealGradient();
             }
+
 
           default:
             libmesh_error_msg("ERROR: Unsupported 2D element type!: " << Utility::enum_to_string(elem->type()));
