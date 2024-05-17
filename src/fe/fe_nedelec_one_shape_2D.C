@@ -164,33 +164,26 @@ RealGradient FE<2,NEDELEC_ONE>::shape(const Elem * elem,
               const Real xi  = p(0);
               const Real eta = p(1);
 
-              libmesh_assert_less (i, 3);
+              libmesh_assert_less (i, 8);
 
               switch(i)
                 {
                 case 0:
-                  {
-                    if (elem->point(0) > elem->point(1))
-                      return RealGradient( -1.0+eta, -xi);
-                    else
-                      return RealGradient( 1.0-eta, xi);
-                  }
+                  return sign(elem->point(0), elem->point(1)) * RealGradient( 8.0*xi*eta-6.0*xi+8.0*eta*eta-12.0*eta+4.0, 2.0*xi*(-4.0*xi-4.0*eta+3.0));
                 case 1:
-                  {
-                    if (elem->point(1) > elem->point(2))
-                      return RealGradient( eta, -xi);
-                    else
-                      return RealGradient( -eta, xi);
-                  }
-
+                  return sign(elem->point(0), elem->point(1)) * RealGradient(-8.0*xi*eta+6.0*xi+2.0*eta-2.0, 4.0*xi*(2.0*xi-1.0));
                 case 2:
-                  {
-                    if (elem->point(2) > elem->point(0))
-                      return RealGradient( eta, -xi+1.0);
-                    else
-                      return RealGradient( -eta, xi-1.0);
-                  }
-
+                  return sign(elem->point(1), elem->point(2)) * RealGradient(2.0*eta*(1.0-4.0*xi), 4.0*xi*(2.0*xi-1.0));
+                case 3:
+                  return sign(elem->point(1), elem->point(2)) * RealGradient(4.0*eta*(1.0-2.0*eta), 2.0*xi*(4.0*eta-1.0));
+                case 4:
+                  return sign(elem->point(2), elem->point(0)) * RealGradient(4.0*eta*(1.0-2.0*eta), 8.0*xi*eta-2.0*xi-6.0*eta+2.0);
+                case 5:
+                  return sign(elem->point(2), elem->point(0)) * RealGradient(2.0*eta*(4.0*xi+4*eta-3.0), -8.0*xi*xi-8.0*xi*eta+12.0*xi+6.0*eta-4.0);
+                case 6:
+                  return RealGradient(8.0*eta*(-xi-2.0*eta+2.0), 8.0*xi*(xi+2.0*eta-1.0));
+                case 7:
+                  return RealGradient(8.0*eta*(2.0*xi+eta-1.0), 8.0*xi*(-2.0*xi-eta+2.0));
                 default:
                   libmesh_error_msg("Invalid i = " << i);
                 }
@@ -431,47 +424,65 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
           case TRI6:
           case TRI7:
             {
-              libmesh_assert_less (i, 3);
+              const Real xi  = p(0);
+              const Real eta = p(1);
 
-              // Account for edge flipping
-              Real f = 1.0;
-
-              switch(i)
-                {
-                case 0:
-                  {
-                    if (elem->point(0) > elem->point(1))
-                      f = -1.0;
-                    break;
-                  }
-                case 1:
-                  {
-                    if (elem->point(1) > elem->point(2))
-                      f = -1.0;
-                    break;
-                  }
-                case 2:
-                  {
-                    if (elem->point(2) > elem->point(0))
-                      f = -1.0;
-                    break;
-                  }
-                default:
-                  libmesh_error_msg("Invalid i = " << i);
-                }
+              libmesh_assert_less (i, 8);
 
               switch (j)
                 {
                   // d()/dxi
                 case 0:
                   {
-                    return RealGradient( 0.0, f*1.0);
-                  }
+                    switch(i)
+                      {
+                      case 0:
+                        return sign(elem->point(0), elem->point(1)) * RealGradient( 8.0*eta-6.0, -16.0*xi-8.0*eta+6.0);
+                      case 1:
+                        return sign(elem->point(0), elem->point(1)) * RealGradient(-8.0*eta+6.0, 16.0*xi-4.0);
+                      case 2:
+                        return sign(elem->point(1), elem->point(2)) * RealGradient(-8.0*eta, 16.0*xi-4.0);
+                      case 3:
+                        return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 8.0*eta-2.0);
+                      case 4:
+                        return sign(elem->point(2), elem->point(0)) * RealGradient(0.0, 8.0*eta-2.0);
+                      case 5:
+                        return sign(elem->point(2), elem->point(0)) * RealGradient(8.0*eta, -16.0*xi-8.0*eta+12.0);
+                      case 6:
+                        return RealGradient(-8.0*eta, 16.0*xi+16.0*eta-8.0);
+                      case 7:
+                        return RealGradient( 16.0*eta, -32.0*xi-8.0*eta+16.0);
+                      default:
+                        libmesh_error_msg("Invalid i = " << i);
+                      }
+                  } // j = 0
+
                   // d()/deta
                 case 1:
                   {
-                    return RealGradient( f*(-1.0) );
-                  }
+                    switch(i)
+                      {
+                      case 0:
+                        return sign(elem->point(0), elem->point(1)) * RealGradient( 8.0*xi+16.0*eta-12.0, -8.0*xi);
+                      case 1:
+                        return sign(elem->point(0), elem->point(1)) * RealGradient(-8.0*xi+2.0, 0.0);
+                      case 2:
+                        return sign(elem->point(1), elem->point(2)) * RealGradient( 2.0-8.0*xi, 0.0);
+                      case 3:
+                        return sign(elem->point(1), elem->point(2)) * RealGradient(4.0-16.0*eta, 8.0*xi);
+                      case 4:
+                        return sign(elem->point(2), elem->point(0)) * RealGradient(4.0-16.0*eta,8.0*xi-6.0);
+                      case 5:
+                        return sign(elem->point(2), elem->point(0)) * RealGradient(8.0*xi+16*eta-6.0,-8.0*xi+6.0);
+                      case 6:
+                        return RealGradient(-8.0*xi-32.0*eta+16.0, 16.0*xi);
+                      case 7:
+                        return RealGradient( 16.0*xi+16.0*eta-8.0,-16.0*xi);
+                      default:
+                        libmesh_error_msg("Invalid i = " << i);
+                      }
+                  } // j = 1
+
                 default:
                   libmesh_error_msg("Invalid j = " << j);
                 }
