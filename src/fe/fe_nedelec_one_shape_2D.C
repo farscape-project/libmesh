@@ -196,6 +196,28 @@ RealGradient FE<2,NEDELEC_ONE>::shape(const Elem * elem,
 
               switch(i)
                 {
+                  case 0:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    break;
+                  case 1:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    break;
+                  case 2:
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
+                    break;
+                  case 3:
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
+                    break;
+                  case 4:
+                    if (sign(elem->point(2), elem->point(0)) < 0) i = 5;
+                    break;
+                  case 5:
+                    if (sign(elem->point(2), elem->point(0)) < 0) i = 4;
+                    break;
+                }
+
+              switch(i)
+                {
                 case 0:
                   return sign(elem->point(0), elem->point(1)) * RealGradient( 8.0*xi*eta-6.0*xi+8.0*eta*eta-12.0*eta+4.0, 2.0*xi*(-4.0*xi-4.0*eta+3.0));
                 case 1:
@@ -484,6 +506,28 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
               const Real eta = p(1);
 
               libmesh_assert_less (i, 8);
+
+              switch(i)
+                {
+                  case 0:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    break;
+                  case 1:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    break;
+                  case 2:
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
+                    break;
+                  case 3:
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
+                    break;
+                  case 4:
+                    if (sign(elem->point(2), elem->point(0)) < 0) i = 5;
+                    break;
+                  case 5:
+                    if (sign(elem->point(2), elem->point(0)) < 0) i = 4;
+                    break;
+                }
 
               switch (j)
                 {
@@ -793,6 +837,28 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
           case TRI7:
             {
               libmesh_assert_less (i, 8);
+
+              switch(i)
+                {
+                  case 0:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    break;
+                  case 1:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    break;
+                  case 2:
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
+                    break;
+                  case 3:
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
+                    break;
+                  case 4:
+                    if (sign(elem->point(2), elem->point(0)) < 0) i = 5;
+                    break;
+                  case 5:
+                    if (sign(elem->point(2), elem->point(0)) < 0) i = 4;
+                    break;
+                }
 
               switch (j)
                 {
