@@ -29,7 +29,7 @@ namespace libMesh
 template <>
 RealGradient FE<2,NEDELEC_ONE>::shape(const Elem * elem,
                                       const Order order,
-                                      const unsigned int i,
+                                      unsigned int i,
                                       const Point & p,
                                       const bool add_p_level)
 {
@@ -123,6 +123,34 @@ RealGradient FE<2,NEDELEC_ONE>::shape(const Elem * elem,
 
               const Real x = 0.5 * (xi + 1.0);
               const Real y = 0.5 * (eta + 1.0);
+
+              switch(i)
+                {
+                  case 0:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    break;
+                  case 1:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    break;
+                  case 2:
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
+                    break;
+                  case 3:
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
+                    break;
+                  case 4:
+                    if (sign(elem->point(2), elem->point(3)) > 0) i = 5;
+                    break;
+                  case 5:
+                    if (sign(elem->point(2), elem->point(3)) > 0) i = 4;
+                    break;
+                  case 6:
+                    if (sign(elem->point(3), elem->point(0)) > 0) i = 7;
+                    break;
+                  case 7:
+                    if (sign(elem->point(3), elem->point(0)) > 0) i = 6;
+                    break;
+                }
 
               switch(i)
                 {
@@ -231,8 +259,8 @@ RealGradient FE<2,NEDELEC_ONE>::shape(const FEType fet,
 template <>
 RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                                             const Order order,
-                                            const unsigned int i,
-                                            const unsigned int j,
+                                            unsigned int i,
+                                            unsigned int j,
                                             const Point & p,
                                             const bool add_p_level)
 {
@@ -341,6 +369,34 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
 
               const Real x = 0.5 * (xi + 1.0);
               const Real y = 0.5 * (eta + 1.0);
+
+              switch(i)
+                {
+                  case 0:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    break;
+                  case 1:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    break;
+                  case 2:
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
+                    break;
+                  case 3:
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
+                    break;
+                  case 4:
+                    if (sign(elem->point(2), elem->point(3)) > 0) i = 5;
+                    break;
+                  case 5:
+                    if (sign(elem->point(2), elem->point(3)) > 0) i = 4;
+                    break;
+                  case 6:
+                    if (sign(elem->point(3), elem->point(0)) > 0) i = 7;
+                    break;
+                  case 7:
+                    if (sign(elem->point(3), elem->point(0)) > 0) i = 6;
+                    break;
+                }
 
               switch (j)
                 {
@@ -536,8 +592,8 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const FEType fet,
 template <>
 RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
                                                    const Order order,
-                                                   const unsigned int libmesh_dbg_var(i),
-                                                   const unsigned int libmesh_dbg_var(j),
+                                                   unsigned int libmesh_dbg_var(i),
+                                                   unsigned int libmesh_dbg_var(j),
                                                    const Point & p,
                                                    const bool add_p_level)
 {
@@ -601,6 +657,34 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
 
               const Real x = 0.5 * (xi + 1.0);
               const Real y = 0.5 * (eta + 1.0);
+
+              switch(i)
+                {
+                  case 0:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    break;
+                  case 1:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    break;
+                  case 2:
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
+                    break;
+                  case 3:
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
+                    break;
+                  case 4:
+                    if (sign(elem->point(2), elem->point(3)) > 0) i = 5;
+                    break;
+                  case 5:
+                    if (sign(elem->point(2), elem->point(3)) > 0) i = 4;
+                    break;
+                  case 6:
+                    if (sign(elem->point(3), elem->point(0)) > 0) i = 7;
+                    break;
+                  case 7:
+                    if (sign(elem->point(3), elem->point(0)) > 0) i = 6;
+                    break;
+                }
 
               switch (j)
                 {
