@@ -793,9 +793,6 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
           case TRI7:
             {
               libmesh_assert_less (i, 8);
-              
-              const Real xi  = p(0);
-              const Real eta = p(1);
 
               switch (j)
                 {
