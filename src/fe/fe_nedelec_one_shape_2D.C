@@ -477,7 +477,7 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                       case 6:
                         return RealGradient(-8.0*xi-32.0*eta+16.0, 16.0*xi);
                       case 7:
-                        return RealGradient( 16.0*xi+16.0*eta-8.0,-16.0*xi);
+                        return RealGradient( 16.0*xi+16.0*eta-8.0,-8.0*xi);
                       default:
                         libmesh_error_msg("Invalid i = " << i);
                       }
