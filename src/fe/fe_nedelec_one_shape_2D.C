@@ -37,7 +37,7 @@ RealGradient FE<2,NEDELEC_ONE>::shape(const Elem * elem,
   libmesh_assert(elem);
 
   const Order total_order = static_cast<Order>(order + add_p_level * elem->p_level());
-  const short sign = elem->point(i) > elem->point((i+1) % elem->n_vertices()) ? 1 : -1;
+  const short sign = elem->point(i/total_order) > elem->point((i/total_order+1) % elem->n_vertices()) ? 1 : -1;
 
   const Real xi  = p(0);
   const Real eta = p(1);
@@ -127,49 +127,49 @@ RealGradient FE<2,NEDELEC_ONE>::shape(const Elem * elem,
               switch(i)
                 {
                   case 0:
-                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    if (sign < 0) i = 1;
                     break;
                   case 1:
-                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    if (sign < 0) i = 0;
                     break;
                   case 2:
-                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
+                    if (sign < 0) i = 3;
                     break;
                   case 3:
-                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
+                    if (sign < 0) i = 2;
                     break;
                   case 4:
-                    if (sign(elem->point(2), elem->point(3)) > 0) i = 5;
+                    if (sign > 0) i = 5;
                     break;
                   case 5:
-                    if (sign(elem->point(2), elem->point(3)) > 0) i = 4;
+                    if (sign > 0) i = 4;
                     break;
                   case 6:
-                    if (sign(elem->point(3), elem->point(0)) > 0) i = 7;
+                    if (sign > 0) i = 7;
                     break;
                   case 7:
-                    if (sign(elem->point(3), elem->point(0)) > 0) i = 6;
+                    if (sign > 0) i = 6;
                     break;
                 }
 
               switch(i)
                 {
                 case 0:
-                  return sign(elem->point(0), elem->point(1)) * RealGradient(0.5*(-18.0*x*y*y+24.0*x*y-6.0*x+12.0*y*y-16.0*y+4.0), 0.0);
+                  return sign * RealGradient(0.5*(-18.0*x*y*y+24.0*x*y-6.0*x+12.0*y*y-16.0*y+4.0), 0.0);
                 case 1:
-                  return sign(elem->point(0), elem->point(1)) * RealGradient(0.5*( 18.0*x*y*y-24.0*x*y+6.0*x-6.0*y*y+8.0*y-2.0), 0.0);
+                  return sign * RealGradient(0.5*( 18.0*x*y*y-24.0*x*y+6.0*x-6.0*y*y+8.0*y-2.0), 0.0);
                 case 2:
-                  return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, x*(-9.0*x*y+6.0*x+6.0*y-4.0));
+                  return sign * RealGradient(0.0, x*(-9.0*x*y+6.0*x+6.0*y-4.0));
                 case 3:
-                  return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, x*( 9.0*x*y-3.0*x-6.0*y+2.0));
+                  return sign * RealGradient(0.0, x*( 9.0*x*y-3.0*x-6.0*y+2.0));
                 case 4:
-                  return sign(elem->point(2), elem->point(3)) * RealGradient(y*( 9.0*x*y-6.0*x-6.0*y+4.0), 0.0);
+                  return sign * RealGradient(y*( 9.0*x*y-6.0*x-6.0*y+4.0), 0.0);
                 case 5:
-                  return sign(elem->point(2), elem->point(3)) * RealGradient(y*(-9.0*x*y+6.0*x+3.0*y-2.0), 0.0);
+                  return sign * RealGradient(y*(-9.0*x*y+6.0*x+3.0*y-2.0), 0.0);
                 case 6:
-                  return sign(elem->point(3), elem->point(0)) * RealGradient(0.0, 0.5*( 18.0*x*x*y-12.0*x*x-24.0*x*y+16.0*x+6.0*y-4.0));
+                  return sign * RealGradient(0.0, 0.5*( 18.0*x*x*y-12.0*x*x-24.0*x*y+16.0*x+6.0*y-4.0));
                 case 7:
-                  return sign(elem->point(3), elem->point(0)) * RealGradient(0.0, 0.5*(-18.0*x*x*y+6.0*x*x+24.0*x*y-8.0*x-6.0*y+2.0));
+                  return sign * RealGradient(0.0, 0.5*(-18.0*x*x*y+6.0*x*x+24.0*x*y-8.0*x-6.0*y+2.0));
                 case 8:
                   return RealGradient(0.0, 3.0*x*(3*x*y-2.0*x-3.0*y+2.0));
                 case 9:
@@ -197,39 +197,39 @@ RealGradient FE<2,NEDELEC_ONE>::shape(const Elem * elem,
               switch(i)
                 {
                   case 0:
-                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    if (sign < 0) i = 1;
                     break;
                   case 1:
-                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    if (sign < 0) i = 0;
                     break;
                   case 2:
-                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
+                    if (sign < 0) i = 3;
                     break;
                   case 3:
-                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
+                    if (sign < 0) i = 2;
                     break;
                   case 4:
-                    if (sign(elem->point(2), elem->point(0)) < 0) i = 5;
+                    if (sign < 0) i = 5;
                     break;
                   case 5:
-                    if (sign(elem->point(2), elem->point(0)) < 0) i = 4;
+                    if (sign < 0) i = 4;
                     break;
                 }
 
               switch(i)
                 {
                 case 0:
-                  return sign(elem->point(0), elem->point(1)) * RealGradient( 8.0*xi*eta-6.0*xi+8.0*eta*eta-12.0*eta+4.0, 2.0*xi*(-4.0*xi-4.0*eta+3.0));
+                  return sign * RealGradient( 8.0*xi*eta-6.0*xi+8.0*eta*eta-12.0*eta+4.0, 2.0*xi*(-4.0*xi-4.0*eta+3.0));
                 case 1:
-                  return sign(elem->point(0), elem->point(1)) * RealGradient(-8.0*xi*eta+6.0*xi+2.0*eta-2.0, 4.0*xi*(2.0*xi-1.0));
+                  return sign * RealGradient(-8.0*xi*eta+6.0*xi+2.0*eta-2.0, 4.0*xi*(2.0*xi-1.0));
                 case 2:
-                  return sign(elem->point(1), elem->point(2)) * RealGradient(2.0*eta*(1.0-4.0*xi), 4.0*xi*(2.0*xi-1.0));
+                  return sign * RealGradient(2.0*eta*(1.0-4.0*xi), 4.0*xi*(2.0*xi-1.0));
                 case 3:
-                  return sign(elem->point(1), elem->point(2)) * RealGradient(4.0*eta*(1.0-2.0*eta), 2.0*xi*(4.0*eta-1.0));
+                  return sign * RealGradient(4.0*eta*(1.0-2.0*eta), 2.0*xi*(4.0*eta-1.0));
                 case 4:
-                  return sign(elem->point(2), elem->point(0)) * RealGradient(4.0*eta*(1.0-2.0*eta), 8.0*xi*eta-2.0*xi-6.0*eta+2.0);
+                  return sign * RealGradient(4.0*eta*(1.0-2.0*eta), 8.0*xi*eta-2.0*xi-6.0*eta+2.0);
                 case 5:
-                  return sign(elem->point(2), elem->point(0)) * RealGradient(2.0*eta*(4.0*xi+4*eta-3.0), -8.0*xi*xi-8.0*xi*eta+12.0*xi+6.0*eta-4.0);
+                  return sign * RealGradient(2.0*eta*(4.0*xi+4*eta-3.0), -8.0*xi*xi-8.0*xi*eta+12.0*xi+6.0*eta-4.0);
                 case 6:
                   return RealGradient(8.0*eta*(-xi-2.0*eta+2.0), 8.0*xi*(xi+2.0*eta-1.0));
                 case 7:
@@ -291,7 +291,7 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
   libmesh_assert_less (j, 2);
 
   const Order total_order = static_cast<Order>(order + add_p_level * elem->p_level());
-  const short sign = elem->point(i) > elem->point((i+1) % elem->n_vertices()) ? 1 : -1;
+  const short sign = elem->point(i/total_order) > elem->point((i/total_order+1) % elem->n_vertices()) ? 1 : -1;
 
   switch (total_order)
     {
@@ -395,28 +395,28 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
               switch(i)
                 {
                   case 0:
-                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    if (sign < 0) i = 1;
                     break;
                   case 1:
-                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    if (sign < 0) i = 0;
                     break;
                   case 2:
-                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
+                    if (sign < 0) i = 3;
                     break;
                   case 3:
-                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
+                    if (sign < 0) i = 2;
                     break;
                   case 4:
-                    if (sign(elem->point(2), elem->point(3)) > 0) i = 5;
+                    if (sign > 0) i = 5;
                     break;
                   case 5:
-                    if (sign(elem->point(2), elem->point(3)) > 0) i = 4;
+                    if (sign > 0) i = 4;
                     break;
                   case 6:
-                    if (sign(elem->point(3), elem->point(0)) > 0) i = 7;
+                    if (sign > 0) i = 7;
                     break;
                   case 7:
-                    if (sign(elem->point(3), elem->point(0)) > 0) i = 6;
+                    if (sign > 0) i = 6;
                     break;
                 }
 
@@ -428,21 +428,21 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                     switch(i)
                       {
                       case 0:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(0.25*(-18.0*y*y+24.0*y-6.0), 0.0);
+                        return sign * RealGradient(0.25*(-18.0*y*y+24.0*y-6.0), 0.0);
                       case 1:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(0.25*( 18.0*y*y-24.0*y+6.0), 0.0);
+                        return sign * RealGradient(0.25*( 18.0*y*y-24.0*y+6.0), 0.0);
                       case 2:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 0.25*(-36.0*x*y+24.0*x+12.0*y-8.0));
+                        return sign * RealGradient(0.0, 0.25*(-36.0*x*y+24.0*x+12.0*y-8.0));
                       case 3:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 0.25*( 36.0*x*y-12.0*x-12.0*y+4.0));
+                        return sign * RealGradient(0.0, 0.25*( 36.0*x*y-12.0*x-12.0*y+4.0));
                       case 4:
-                        return sign(elem->point(2), elem->point(3)) * RealGradient(0.25*( 18.0*y*y-12.0*y), 0.0);
+                        return sign * RealGradient(0.25*( 18.0*y*y-12.0*y), 0.0);
                       case 5:
-                        return sign(elem->point(2), elem->point(3)) * RealGradient(0.25*(-18.0*y*y+12.0*y), 0.0);
+                        return sign * RealGradient(0.25*(-18.0*y*y+12.0*y), 0.0);
                       case 6:
-                        return sign(elem->point(3), elem->point(0)) * RealGradient(0.0, 0.25*( 36.0*x*y-24.0*x-24.0*y+16.0));
+                        return sign * RealGradient(0.0, 0.25*( 36.0*x*y-24.0*x-24.0*y+16.0));
                       case 7:
-                        return sign(elem->point(3), elem->point(0)) * RealGradient(0.0, 0.25*(-36.0*x*y+12.0*x+24.0*y-8.0));
+                        return sign * RealGradient(0.0, 0.25*(-36.0*x*y+12.0*x+24.0*y-8.0));
                       case 8:
                         return RealGradient(0.0, 1.5*(6.0*x*y-4.0*x-3.0*y+2.0));
                       case 9:
@@ -463,21 +463,21 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                     switch(i)
                       {
                       case 0:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(0.25*(-36.0*x*y+24.0*x+24.0*y-16.0), 0.0);
+                        return sign * RealGradient(0.25*(-36.0*x*y+24.0*x+24.0*y-16.0), 0.0);
                       case 1:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(0.25*( 36.0*x*y-24.0*x-12.0*y+8.0), 0.0);
+                        return sign * RealGradient(0.25*( 36.0*x*y-24.0*x-12.0*y+8.0), 0.0);
                       case 2:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 0.25*x*(-18.0*x+12.0));
+                        return sign * RealGradient(0.0, 0.25*x*(-18.0*x+12.0));
                       case 3:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 0.25*x*( 18.0*x-12.0));
+                        return sign * RealGradient(0.0, 0.25*x*( 18.0*x-12.0));
                       case 4:
-                        return sign(elem->point(2), elem->point(3)) * RealGradient(0.25*( 36.0*x*y-12.0*x-24.0*y+8.0), 0.0);
+                        return sign * RealGradient(0.25*( 36.0*x*y-12.0*x-24.0*y+8.0), 0.0);
                       case 5:
-                        return sign(elem->point(2), elem->point(3)) * RealGradient(0.25*(-36.0*x*y+12.0*x+12.0*y-4.0), 0.0);
+                        return sign * RealGradient(0.25*(-36.0*x*y+12.0*x+12.0*y-4.0), 0.0);
                       case 6:
-                        return sign(elem->point(3), elem->point(0)) * RealGradient(0.0, 0.25*( 18.0*x*x-24.0*x+6.0));
+                        return sign * RealGradient(0.0, 0.25*( 18.0*x*x-24.0*x+6.0));
                       case 7:
-                        return sign(elem->point(3), elem->point(0)) * RealGradient(0.0, 0.25*(-18.0*x*x+24.0*x-6.0));
+                        return sign * RealGradient(0.0, 0.25*(-18.0*x*x+24.0*x-6.0));
                       case 8:
                         return RealGradient(0.0, 1.5*x*(3.0*x-3.0));
                       case 9:
@@ -510,22 +510,22 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
               switch(i)
                 {
                   case 0:
-                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    if (sign < 0) i = 1;
                     break;
                   case 1:
-                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    if (sign < 0) i = 0;
                     break;
                   case 2:
-                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
+                    if (sign < 0) i = 3;
                     break;
                   case 3:
-                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
+                    if (sign < 0) i = 2;
                     break;
                   case 4:
-                    if (sign(elem->point(2), elem->point(0)) < 0) i = 5;
+                    if (sign < 0) i = 5;
                     break;
                   case 5:
-                    if (sign(elem->point(2), elem->point(0)) < 0) i = 4;
+                    if (sign < 0) i = 4;
                     break;
                 }
 
@@ -537,17 +537,17 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                     switch(i)
                       {
                       case 0:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient( 8.0*eta-6.0, -16.0*xi-8.0*eta+6.0);
+                        return sign * RealGradient( 8.0*eta-6.0, -16.0*xi-8.0*eta+6.0);
                       case 1:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(-8.0*eta+6.0, 16.0*xi-4.0);
+                        return sign * RealGradient(-8.0*eta+6.0, 16.0*xi-4.0);
                       case 2:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(-8.0*eta, 16.0*xi-4.0);
+                        return sign * RealGradient(-8.0*eta, 16.0*xi-4.0);
                       case 3:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 8.0*eta-2.0);
+                        return sign * RealGradient(0.0, 8.0*eta-2.0);
                       case 4:
-                        return sign(elem->point(2), elem->point(0)) * RealGradient(0.0, 8.0*eta-2.0);
+                        return sign * RealGradient(0.0, 8.0*eta-2.0);
                       case 5:
-                        return sign(elem->point(2), elem->point(0)) * RealGradient(8.0*eta, -16.0*xi-8.0*eta+12.0);
+                        return sign * RealGradient(8.0*eta, -16.0*xi-8.0*eta+12.0);
                       case 6:
                         return RealGradient(-8.0*eta, 16.0*xi+16.0*eta-8.0);
                       case 7:
@@ -563,17 +563,17 @@ RealGradient FE<2,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                     switch(i)
                       {
                       case 0:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient( 8.0*xi+16.0*eta-12.0, -8.0*xi);
+                        return sign * RealGradient( 8.0*xi+16.0*eta-12.0, -8.0*xi);
                       case 1:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(-8.0*xi+2.0, 0.0);
+                        return sign * RealGradient(-8.0*xi+2.0, 0.0);
                       case 2:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient( 2.0-8.0*xi, 0.0);
+                        return sign * RealGradient( 2.0-8.0*xi, 0.0);
                       case 3:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(4.0-16.0*eta, 8.0*xi);
+                        return sign * RealGradient(4.0-16.0*eta, 8.0*xi);
                       case 4:
-                        return sign(elem->point(2), elem->point(0)) * RealGradient(4.0-16.0*eta,8.0*xi-6.0);
+                        return sign * RealGradient(4.0-16.0*eta,8.0*xi-6.0);
                       case 5:
-                        return sign(elem->point(2), elem->point(0)) * RealGradient(8.0*xi+16*eta-6.0,-8.0*xi+6.0);
+                        return sign * RealGradient(8.0*xi+16*eta-6.0,-8.0*xi+6.0);
                       case 6:
                         return RealGradient(-8.0*xi-32.0*eta+16.0, 16.0*xi);
                       case 7:
@@ -650,6 +650,7 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
   libmesh_assert_less (j, 3);
 
   const Order total_order = static_cast<Order>(order + add_p_level * elem->p_level());
+  const short sign = elem->point(i/total_order) > elem->point((i/total_order+1) % elem->n_vertices()) ? 1 : -1;
 
   switch (total_order)
     {
@@ -705,28 +706,28 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
               switch(i)
                 {
                   case 0:
-                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    if (sign < 0) i = 1;
                     break;
                   case 1:
-                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    if (sign < 0) i = 0;
                     break;
                   case 2:
-                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
+                    if (sign < 0) i = 3;
                     break;
                   case 3:
-                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
+                    if (sign < 0) i = 2;
                     break;
                   case 4:
-                    if (sign(elem->point(2), elem->point(3)) > 0) i = 5;
+                    if (sign > 0) i = 5;
                     break;
                   case 5:
-                    if (sign(elem->point(2), elem->point(3)) > 0) i = 4;
+                    if (sign > 0) i = 4;
                     break;
                   case 6:
-                    if (sign(elem->point(3), elem->point(0)) > 0) i = 7;
+                    if (sign > 0) i = 7;
                     break;
                   case 7:
-                    if (sign(elem->point(3), elem->point(0)) > 0) i = 6;
+                    if (sign > 0) i = 6;
                     break;
                 }
 
@@ -745,13 +746,13 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
                       case 10:
                         return RealGradient();
                       case 2:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 0.125*(-36.0*y+24.0));
+                        return sign * RealGradient(0.0, 0.125*(-36.0*y+24.0));
                       case 3:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 0.125*( 36.0*y-12.0));
+                        return sign * RealGradient(0.0, 0.125*( 36.0*y-12.0));
                       case 6:
-                        return sign(elem->point(3), elem->point(0)) * RealGradient(0.0, 0.125*( 36.0*y-24.0));
+                        return sign * RealGradient(0.0, 0.125*( 36.0*y-24.0));
                       case 7:
-                        return sign(elem->point(3), elem->point(0)) * RealGradient(0.0, 0.125*(-36.0*y+12.0));
+                        return sign * RealGradient(0.0, 0.125*(-36.0*y+12.0));
                       case 8:
                         return RealGradient(0.0,  0.75*(6.0*y-4.0));
                       case 11:
@@ -768,21 +769,21 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
                     switch(i)
                       {
                       case 0:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(0.125*(-36.0*y+24.0), 0.0);
+                        return sign * RealGradient(0.125*(-36.0*y+24.0), 0.0);
                       case 1:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(0.125*( 36.0*y-24.0), 0.0);
+                        return sign * RealGradient(0.125*( 36.0*y-24.0), 0.0);
                       case 2:
-                       return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 0.125*(-36.0*x+12.0));
+                       return sign * RealGradient(0.0, 0.125*(-36.0*x+12.0));
                       case 3:
-                       return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 0.125*( 36.0*x-12.0));
+                       return sign * RealGradient(0.0, 0.125*( 36.0*x-12.0));
                       case 4:
-                        return sign(elem->point(2), elem->point(3)) * RealGradient(0.125*( 36.0*y-12.0), 0.0);
+                        return sign * RealGradient(0.125*( 36.0*y-12.0), 0.0);
                       case 5:
-                        return sign(elem->point(2), elem->point(3)) * RealGradient(0.125*(-36.0*y+12.0), 0.0);
+                        return sign * RealGradient(0.125*(-36.0*y+12.0), 0.0);
                       case 6:
-                        return sign(elem->point(3), elem->point(0)) * RealGradient(0.0, 0.125*( 36.0*x-24.0));
+                        return sign * RealGradient(0.0, 0.125*( 36.0*x-24.0));
                       case 7:
-                        return sign(elem->point(3), elem->point(0)) * RealGradient(0.0, 0.125*(-36.0*x+24.0));
+                        return sign * RealGradient(0.0, 0.125*(-36.0*x+24.0));
                       case 8:
                         return RealGradient(0.0,  0.75*(6.0*x-3.0));
                       case 9:
@@ -810,13 +811,13 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
                       case 11:
                         return RealGradient();
                       case 0:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(0.125*(-36.0*x+24.0), 0.0);
+                        return sign * RealGradient(0.125*(-36.0*x+24.0), 0.0);
                       case 1:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(0.125*( 36.0*x-12.0), 0.0);
+                        return sign * RealGradient(0.125*( 36.0*x-12.0), 0.0);
                       case 4:
-                        return sign(elem->point(2), elem->point(3)) * RealGradient(0.125*( 36.0*x-24.0), 0.0);
+                        return sign * RealGradient(0.125*( 36.0*x-24.0), 0.0);
                       case 5:
-                        return sign(elem->point(2), elem->point(3)) * RealGradient(0.125*(-36.0*x+12.0), 0.0);
+                        return sign * RealGradient(0.125*(-36.0*x+12.0), 0.0);
                       case 9:
                         return RealGradient(0.75*(-6.0*x+4.0), 0.0);
                       case 10:
@@ -841,22 +842,22 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
               switch(i)
                 {
                   case 0:
-                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    if (sign < 0) i = 1;
                     break;
                   case 1:
-                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    if (sign < 0) i = 0;
                     break;
                   case 2:
-                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
+                    if (sign < 0) i = 3;
                     break;
                   case 3:
-                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
+                    if (sign < 0) i = 2;
                     break;
                   case 4:
-                    if (sign(elem->point(2), elem->point(0)) < 0) i = 5;
+                    if (sign < 0) i = 5;
                     break;
                   case 5:
-                    if (sign(elem->point(2), elem->point(0)) < 0) i = 4;
+                    if (sign < 0) i = 4;
                     break;
                 }
 
@@ -871,13 +872,13 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
                       case 4:
                         return RealGradient();
                       case 0:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(0.0, -16.0);
+                        return sign * RealGradient(0.0, -16.0);
                       case 1:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(0.0, 16.0);
+                        return sign * RealGradient(0.0, 16.0);
                       case 2:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 16.0);
+                        return sign * RealGradient(0.0, 16.0);
                       case 5:
-                        return sign(elem->point(2), elem->point(0)) * RealGradient(0.0, -16.0);
+                        return sign * RealGradient(0.0, -16.0);
                       case 6:
                         return RealGradient(0.0, 16.0);
                       case 7:
@@ -893,17 +894,17 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
                     switch(i)
                       {
                       case 0:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient( 8.0, -8.0);
+                        return sign * RealGradient( 8.0, -8.0);
                       case 1:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(-8.0, 0.0);
+                        return sign * RealGradient(-8.0, 0.0);
                       case 2:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(-8.0, 0.0);
+                        return sign * RealGradient(-8.0, 0.0);
                       case 3:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(0.0, 8.0);
+                        return sign * RealGradient(0.0, 8.0);
                       case 4:
-                        return sign(elem->point(2), elem->point(0)) * RealGradient(0.0, 8.0);
+                        return sign * RealGradient(0.0, 8.0);
                       case 5:
-                        return sign(elem->point(2), elem->point(0)) * RealGradient(8.0, -8.0);
+                        return sign * RealGradient(8.0, -8.0);
                       case 6:
                         return RealGradient(-8.0, 16.0);
                       case 7:
@@ -922,13 +923,13 @@ RealGradient FE<2,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
                       case 2:
                         return RealGradient();
                       case 0:
-                        return sign(elem->point(0), elem->point(1)) * RealGradient(16.0, 0.0);
+                        return sign * RealGradient(16.0, 0.0);
                       case 3:
-                        return sign(elem->point(1), elem->point(2)) * RealGradient(-16.0, 0.0);
+                        return sign * RealGradient(-16.0, 0.0);
                       case 4:
-                        return sign(elem->point(2), elem->point(0)) * RealGradient(-16.0, 0.0);
+                        return sign * RealGradient(-16.0, 0.0);
                       case 5:
-                        return sign(elem->point(2), elem->point(0)) * RealGradient( 16, 0.0);
+                        return sign * RealGradient( 16, 0.0);
                       case 6:
                         return RealGradient(-32.0, 0.0);
                       case 7:
