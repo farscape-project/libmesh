@@ -21,14 +21,12 @@
 
 #include "libmesh/dof_map.h"
 #include "libmesh/fe_base.h"
-#include "libmesh/fe.h"
 #include "libmesh/fe_interface.h"
 #include "libmesh/fem_context.h"
 #include "libmesh/mesh.h"
 #include "libmesh/quadrature.h"
 #include "libmesh/string_to_enum.h"
 #include "libmesh/zero_function.h"
-#include "libmesh/elem.h"
 
 // Bring in everything from the libMesh namespace
 using namespace libMesh;
@@ -130,33 +128,6 @@ bool CurlCurlSystem::element_time_derivative (bool request_jacobian,
   // The number of local degrees of freedom in each variable
   const unsigned int n_u_dofs = c.n_dof_indices(u_var);
 
-  const std::vector<dof_id_type> & vector_dof_indices = c.get_dof_indices(0);
-
-  const Elem & e = c.get_elem();
-  for (auto n : e.node_ref_range())
-    n.print_info();
-  
-  std::unique_ptr<FEVectorBase> probe = FEVectorBase::build(2, FEType{2, NEDELEC_ONE});
-  const std::vector<std::vector<RealGradient>> & probe_phi = probe->get_phi();
-  std::vector<Point> nodes{{1,0},{0,1},{-1,0},{0,-1}};
-  probe->reinit(&e, &nodes);
-
-  for(size_t i = 0; i < 8; i++)
-  {
-    std::cout << "basis: " << i << " " << std::endl;
-    for (size_t j = 0; j < nodes.size(); j++)
-    {
-      std::cout << j << ": ";
-      for (size_t d = 0; d < 2; d++)
-        std::cout << probe_phi[i][j](d) << " ";
-      std::cout << std::endl;
-    }
-  }
-  for(auto v : vector_dof_indices)
-    std::cout << v << " ";
-  std::cout << std::endl;
-  
-  
   DenseSubMatrix<Number> & Kuu = c.get_elem_jacobian(u_var, u_var);
 
   DenseSubVector<Number> & Fu = c.get_elem_residual(u_var);
