@@ -1150,22 +1150,22 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                       {
                       case 0:
                           sign(elem->point(0), elem->point(1)) * RealGradient( 8.0*y+8.0*z-6.0, 
-                                                                              -16.0*x, 
-                                                                               16.0*x);
+                                                                               2.0*(-8.0*x-4.0*y-4.0*z+3.0), 
+                                                                               2.0*(-8.0*x-4.0*y-4.0*z+3.0));
 
                       case 1:
                           sign(elem->point(0), elem->point(1)) * RealGradient( -8.0*y-8.0*z+6.0, 
-                                                                               16.0*x, 
-                                                                               16.0*x);
+                                                                               4.0*(4.0*x-1.0), 
+                                                                               4.0*(4.0*x-1.0));
             
                       case 2:
                           sign(elem->point(1), elem->point(2)) * RealGradient( -8.0*y,  
-                                                                               16.0*x, 
+                                                                                4.0*(4.0*x-1.0), 
                                                                                 0.0);
 
                       case 3:
                           sign(elem->point(1), elem->point(2)) * RealGradient( 0.0,  
-                                                                               8.0*y, 
+                                                                               2.0*(4.0*y-1.0), 
                                                                                0.0);
                
                       case 4:
@@ -1189,14 +1189,14 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                                                                               -8.0*z+2.0);
 
                       case 8:
-                          sign(elem->point(1), elem->point(3)) * RealGradient(-8.0*z,  
+                        sign(elem->point(1), elem->point(3)) * RealGradient(  -8.0*z,  
                                                                                0.0, 
-                                                                              16.0*x);
+                                                                               4.0*(4.0*x-1.0));
 
                       case 9:
                         sign(elem->point(1), elem->point(3)) * RealGradient( 0.0,  
                                                                              0.0, 
-                                                                             8.0*z);
+                                                                             2.0*(4.0*z-1));
 
                       case 10:
                         sign(elem->point(2), elem->point(3)) * RealGradient(0.0,  
@@ -1235,7 +1235,7 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                                                                               0.0 );
 
                       case 3:
-                          sign(elem->point(1), elem->point(2)) * RealGradient(4.0-16.0*y,  
+                          sign(elem->point(1), elem->point(2)) * RealGradient(4.0*(1.0-4.0*y),  
                                                                               8.0*x, 
                                                                               0.0);
                
@@ -1250,9 +1250,9 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                                                                                4.0*(4.0*y-1.0));
 
                       case 6:
-                          sign(elem->point(0), elem->point(3)) * RealGradient( 8.0*z,  
-                                                                               8.0*z, 
-                                                                              16.0*x+16.0*y+8.0*z-12.0);
+                          sign(elem->point(0), elem->point(3)) * RealGradient( -8.0*z,  
+                                                                               -8.0*z, 
+                                                                               16.0*x+16.0*y+8.0*z-12.0);
                 
                       case 7:
                           sign(elem->point(0), elem->point(3)) * RealGradient( 0.0,
@@ -1265,19 +1265,19 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                                                                               0.0);
 
                       case 9:
-                        sign(elem->point(1), elem->point(3)) * RealGradient(0.0,  
-                                                                            0.0, 
-                                                                            0.0);
+                          sign(elem->point(1), elem->point(3)) * RealGradient(0.0,  
+                                                                              0.0, 
+                                                                              0.0);
 
                       case 10:
-                        sign(elem->point(2), elem->point(3)) * RealGradient(0.0,  
-                                                                           -8.0*z, 
-                                                                           16.0*y);
+                          sign(elem->point(2), elem->point(3)) * RealGradient(0.0,  
+                                                                             -8.0*z, 
+                                                                              4.0*(4.0*y-1.0));
 
                       case 11:
-                        sign(elem->point(2), elem->point(3)) * RealGradient(0.0,  
-                                                                            0.0, 
-                                                                            2.0*(4.0*z-1.0));                     
+                          sign(elem->point(2), elem->point(3)) * RealGradient(0.0,  
+                                                                              0.0, 
+                                                                              2.0*(4.0*z-1.0));                     
                                                                           
                          default:
                         libmesh_error_msg("Invalid i = " << i);
@@ -1291,7 +1291,7 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                     switch(i)
                       {
                       case 0:
-                          sign(elem->point(0), elem->point(1)) * RealGradient( 8.0*x+16.0*y+16.0*y-12.0, 
+                          sign(elem->point(0), elem->point(1)) * RealGradient( 8.0*x+16.0*y+16.0*z-12.0, 
                                                                               -8.0*x, 
                                                                               -8.0*x);
 
@@ -1326,9 +1326,9 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                                                                                8.0*x+8.0*y-6.0);
                 
                       case 7:
-                          sign(elem->point(0), elem->point(3)) * RealGradient( 16.0*z,
-                                                                               16.0*z, 
-                                                                               -8.0*x-8.0*y+6.0);
+                          sign(elem->point(0), elem->point(3)) * RealGradient( 4.0*(4.0*z-1.0),
+                                                                               4.0*(4.0*z-1.0), 
+                                                                              -8.0*x-8.0*y+6.0);
 
                       case 8:
                           sign(elem->point(1), elem->point(3)) * RealGradient(2.0*(1.0-4.0*x),  
@@ -1336,9 +1336,9 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                                                                               0.0);
 
                       case 9:
-                        sign(elem->point(1), elem->point(3)) * RealGradient(-16.0*z,  
-                                                                              0.0, 
-                                                                              8.0*x);
+                        sign(elem->point(1), elem->point(3)) * RealGradient(4.0*(1.0-4.0*z),  
+                                                                            0.0, 
+                                                                            8.0*x);
 
                       case 10:
                         sign(elem->point(2), elem->point(3)) * RealGradient(0.0,  
