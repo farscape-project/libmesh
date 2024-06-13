@@ -29,6 +29,27 @@ inline short sign(const Point p, const Point q)
   return p > q ? 1 : -1;
 }
 
+inline short sign(bool orientation)
+{
+  if(orientation)
+    return 1;
+  else
+    return -1;
+}
+
+template<size_t N>
+bool orientation(std::array<Point, N> & arr)
+{
+  if (N % 2 == 0)
+    std::rotate(arr.begin(), std::min_element(arr.begin(), arr.end()), arr.end());
+
+  size_t cnt = 0;
+    for(size_t i = 0; i < arr.size(); i++)
+        for(size_t j = i + 1; j < arr.size(); j++)
+            if (arr[i] > arr[j]) cnt++;
+  return cnt % 2;
+}
+
 template <>
 RealGradient FE<3,NEDELEC_ONE>::shape(const Elem * elem,
                                       const Order order,
@@ -407,7 +428,71 @@ RealGradient FE<3,NEDELEC_ONE>::shape(const Elem * elem,
                     sign(elem->point(2), elem->point(3)) * RealGradient(0.0,  
                                                                         4.0*z*(1.0-2.0*z), 
                                                                         2.0*y*(4.0*z-1.0));
+                
+                case 12:
+                  {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
+                    return sign((orientation(arr))) * RealGradient(8.0*y*(-x-2.0*y-2.0*z+2.0),  
+                                                                   8.0*x*(x+2.0*y+z-1.0),  
+                                                                   8.0*x*y);
+                  }
 
+                case 13:
+                  {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
+                    return sign((orientation(arr))) * RealGradient(8.0*y*(2.0*x+y+z-1.0),  
+                                                                   8.0*x*(-2.0*x-y-2.0*z+2.0),  
+                                                                   8.0*x*y);
+                  }
+
+                case 14:
+                  {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
+                    return sign((orientation(arr))) * RealGradient(8.0*z*(-x-2.0*y-2.0*z+2.0),  
+                                                                   8.0*x*z,  
+                                                                   8.0*x*(x+y+2.0*z-1.0));
+                  }
+
+                case 15:
+                  {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
+                    return sign((orientation(arr))) * RealGradient(8.0*z*(2.0*x+y+z-1.0),  
+                                                                   8.0*x*z,  
+                                                                   8.0*x*(-2.0*x-2.0*y-z+2.0));
+                  }
+
+                case 16:
+                  {
+                    std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
+                    return sign((orientation(arr))) * RealGradient(-8.0*y*z,  
+                                                                   16.0*x*z,  
+                                                                   -8.0*x*y);
+                  }
+
+                case 17:
+                  {
+                    std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
+                    return sign((orientation(arr))) * RealGradient(-8.0*y*z,  
+                                                                   -8.0*x*z,  
+                                                                   16.0*x*y);
+                  }
+
+                case 18:
+                  {
+                    std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
+                    return sign((orientation(arr))) * RealGradient(8.0*y*z,  
+                                                                   8.0*z*(-2.0*x-y-2.0*z+2.0),  
+                                                                   8.0*y*(x+y+2.0*z-1.0));
+                  }
+
+                case 19:
+                  {
+                    std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
+                    return sign((orientation(arr))) * RealGradient(8.0*y*z,  
+                                                                   8.0*z*(x+2.0*y+z-1.0),  
+                                                                   8.0*y*(-2.0*x-2.0*y-z+2.0));
+                  }
+                
                 default:
                   libmesh_error_msg("Invalid i = " << i);
                 }
