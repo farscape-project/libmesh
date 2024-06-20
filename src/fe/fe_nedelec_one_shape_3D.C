@@ -53,7 +53,7 @@ bool orientation(std::array<Point, N> & arr)
 template <>
 RealGradient FE<3,NEDELEC_ONE>::shape(const Elem * elem,
                                       const Order order,
-                                      const unsigned int i,
+                                      unsigned int i,
                                       const Point & p,
                                       const bool add_p_level)
 {
@@ -358,7 +358,7 @@ RealGradient FE<3,NEDELEC_ONE>::shape(const Elem * elem,
               return RealGradient();
             }
 
-          case TET10:
+
           case TET14:
             {
               libmesh_assert_less (i, 20);
@@ -366,6 +366,94 @@ RealGradient FE<3,NEDELEC_ONE>::shape(const Elem * elem,
               const Real x = p(0);
               const Real y = p(1);
               const Real z = p(2);
+
+              switch(i)
+                {
+                  case 0:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    break;
+                  case 1:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    break;
+                  case 2:
+                    if (sign(elem->point(2), elem->point(3)) < 0) i = 3;
+                    break;
+                  case 3:
+                    if (sign(elem->point(2), elem->point(3)) < 0) i = 2;
+                    break;
+                  case 4:
+                    if (sign(elem->point(4), elem->point(5)) < 0) i = 5;
+                    break;
+                  case 5:
+                    if (sign(elem->point(4), elem->point(5)) < 0) i = 4;
+                    break;
+                  case 6:
+                    if (sign(elem->point(6), elem->point(7)) < 0) i = 7;
+                    break;
+                  case 7:
+                    if (sign(elem->point(6), elem->point(7)) < 0) i = 6;
+                    break;
+                  case 8:
+                    if (sign(elem->point(8), elem->point(9)) < 0) i = 9;
+                    break;
+                  case 9:
+                    if (sign(elem->point(8), elem->point(9)) < 0) i = 8;
+                    break;
+                  case 10:
+                    if (sign(elem->point(10), elem->point(11)) < 0) i = 11;
+                    break;
+                  case 11:
+                    if (sign(elem->point(10), elem->point(11)) < 0) i = 10;
+                    break;
+                  case 12:
+                    {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
+                    if (sign(orientation(arr)) < 0) i = 13;
+                    break;
+                    }
+                  case 13:
+                    {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
+                    if (sign(orientation(arr)) < 0) i = 12;
+                    break;
+                    }
+                  case 14:
+                    {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 15;
+                    break;
+                    }
+                  case 15:
+                    {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 14;
+                    break;
+                    }
+                  case 16:
+                    {
+                    std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 17;
+                    break;
+                    }
+                  case 17:
+                    {
+                    std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 16;
+                    break;
+                    }
+                  case 18:
+                    {
+                    std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 19;
+                    break;
+                    }
+                  case 19:
+                    {
+                    std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 18;
+                    break;
+                    }
+                }
 
               switch(i)
                 {
@@ -542,7 +630,7 @@ RealGradient FE<3,NEDELEC_ONE>::shape(const FEType fet,
 template <>
 RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                                             const Order order,
-                                            const unsigned int i,
+                                            unsigned int i,
                                             const unsigned int j,
                                             const Point & p,
                                             const bool add_p_level)
@@ -1217,7 +1305,6 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
               return RealGradient();
             }
 
-          case TET10:
           case TET14:
             {
               libmesh_assert_less (i, 20);
@@ -1225,6 +1312,94 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
               const Real x = p(0);
               const Real y = p(1);
               const Real z = p(2);
+
+              switch(i)
+                {
+                  case 0:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    break;
+                  case 1:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    break;
+                  case 2:
+                    if (sign(elem->point(2), elem->point(3)) < 0) i = 3;
+                    break;
+                  case 3:
+                    if (sign(elem->point(2), elem->point(3)) < 0) i = 2;
+                    break;
+                  case 4:
+                    if (sign(elem->point(4), elem->point(5)) < 0) i = 5;
+                    break;
+                  case 5:
+                    if (sign(elem->point(4), elem->point(5)) < 0) i = 4;
+                    break;
+                  case 6:
+                    if (sign(elem->point(6), elem->point(7)) < 0) i = 7;
+                    break;
+                  case 7:
+                    if (sign(elem->point(6), elem->point(7)) < 0) i = 6;
+                    break;
+                  case 8:
+                    if (sign(elem->point(8), elem->point(9)) < 0) i = 9;
+                    break;
+                  case 9:
+                    if (sign(elem->point(8), elem->point(9)) < 0) i = 8;
+                    break;
+                  case 10:
+                    if (sign(elem->point(10), elem->point(11)) < 0) i = 11;
+                    break;
+                  case 11:
+                    if (sign(elem->point(10), elem->point(11)) < 0) i = 10;
+                    break;
+                  case 12:
+                    {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
+                    if (sign(orientation(arr)) < 0) i = 13;
+                    break;
+                    }
+                  case 13:
+                    {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
+                    if (sign(orientation(arr)) < 0) i = 12;
+                    break;
+                    }
+                  case 14:
+                    {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 15;
+                    break;
+                    }
+                  case 15:
+                    {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 14;
+                    break;
+                    }
+                  case 16:
+                    {
+                    std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 17;
+                    break;
+                    }
+                  case 17:
+                    {
+                    std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 16;
+                    break;
+                    }
+                  case 18:
+                    {
+                    std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 19;
+                    break;
+                    }
+                  case 19:
+                    {
+                    std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 18;
+                    break;
+                    }
+                }
 
               switch (j)
                 {
@@ -1686,7 +1861,7 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const FEType fet,
 template <>
 RealGradient FE<3,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
                                                    const Order order,
-                                                   const unsigned int i,
+                                                   unsigned int i,
                                                    const unsigned int j,
                                                    const Point & libmesh_dbg_var(p),
                                                    const bool add_p_level)
@@ -2113,10 +2288,9 @@ RealGradient FE<3,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
               return RealGradient();
             }
 
-          case TET10:
           case TET14:
             {
-              libmesh_assert_less (i, 12);
+              libmesh_assert_less (i, 20);
 
 #ifndef NDEBUG
               const Real xi   = p(0);
@@ -2127,6 +2301,94 @@ RealGradient FE<3,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
               libmesh_assert_less_equal ( std::fabs(xi),   1.0+TOLERANCE );
               libmesh_assert_less_equal ( std::fabs(eta),  1.0+TOLERANCE );
               libmesh_assert_less_equal ( std::fabs(zeta), 1.0+TOLERANCE );
+
+              switch(i)
+                {
+                  case 0:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 1;
+                    break;
+                  case 1:
+                    if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
+                    break;
+                  case 2:
+                    if (sign(elem->point(2), elem->point(3)) < 0) i = 3;
+                    break;
+                  case 3:
+                    if (sign(elem->point(2), elem->point(3)) < 0) i = 2;
+                    break;
+                  case 4:
+                    if (sign(elem->point(4), elem->point(5)) < 0) i = 5;
+                    break;
+                  case 5:
+                    if (sign(elem->point(4), elem->point(5)) < 0) i = 4;
+                    break;
+                  case 6:
+                    if (sign(elem->point(6), elem->point(7)) < 0) i = 7;
+                    break;
+                  case 7:
+                    if (sign(elem->point(6), elem->point(7)) < 0) i = 6;
+                    break;
+                  case 8:
+                    if (sign(elem->point(8), elem->point(9)) < 0) i = 9;
+                    break;
+                  case 9:
+                    if (sign(elem->point(8), elem->point(9)) < 0) i = 8;
+                    break;
+                  case 10:
+                    if (sign(elem->point(10), elem->point(11)) < 0) i = 11;
+                    break;
+                  case 11:
+                    if (sign(elem->point(10), elem->point(11)) < 0) i = 10;
+                    break;
+                  case 12:
+                    {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
+                    if (sign(orientation(arr)) < 0) i = 13;
+                    break;
+                    }
+                  case 13:
+                    {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
+                    if (sign(orientation(arr)) < 0) i = 12;
+                    break;
+                    }
+                  case 14:
+                    {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 15;
+                    break;
+                    }
+                  case 15:
+                    {
+                    std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 14;
+                    break;
+                    }
+                  case 16:
+                    {
+                    std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 17;
+                    break;
+                    }
+                  case 17:
+                    {
+                    std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 16;
+                    break;
+                    }
+                  case 18:
+                    {
+                    std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 19;
+                    break;
+                    }
+                  case 19:
+                    {
+                    std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
+                    if (sign(orientation(arr)) < 0) i = 18;
+                    break;
+                    }
+                }
 
               switch (j)
                 {
@@ -2255,8 +2517,8 @@ RealGradient FE<3,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
                         {
                           std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
                           return sign((orientation(arr))) * RealGradient(0.0,  
-                                                                       8.0*z,  
-                                                                     -16.0*y);
+                                                                         0.0,  
+                                                                         0.0);
                         }
 
                      default:
