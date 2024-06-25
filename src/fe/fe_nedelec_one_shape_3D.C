@@ -376,34 +376,34 @@ RealGradient FE<3,NEDELEC_ONE>::shape(const Elem * elem,
                     if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
                     break;
                   case 2:
-                    if (sign(elem->point(2), elem->point(3)) < 0) i = 3;
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
                     break;
                   case 3:
-                    if (sign(elem->point(2), elem->point(3)) < 0) i = 2;
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
                     break;
                   case 4:
-                    if (sign(elem->point(4), elem->point(5)) < 0) i = 5;
+                    if (sign(elem->point(0), elem->point(2)) < 0) i = 5;
                     break;
                   case 5:
-                    if (sign(elem->point(4), elem->point(5)) < 0) i = 4;
+                    if (sign(elem->point(0), elem->point(2)) < 0) i = 4;
                     break;
                   case 6:
-                    if (sign(elem->point(6), elem->point(7)) < 0) i = 7;
+                    if (sign(elem->point(0), elem->point(3)) < 0) i = 7;
                     break;
                   case 7:
-                    if (sign(elem->point(6), elem->point(7)) < 0) i = 6;
+                    if (sign(elem->point(0), elem->point(3)) < 0) i = 6;
                     break;
                   case 8:
-                    if (sign(elem->point(8), elem->point(9)) < 0) i = 9;
+                    if (sign(elem->point(1), elem->point(3)) < 0) i = 9;
                     break;
                   case 9:
-                    if (sign(elem->point(8), elem->point(9)) < 0) i = 8;
+                    if (sign(elem->point(1), elem->point(3)) < 0) i = 8;
                     break;
                   case 10:
-                    if (sign(elem->point(10), elem->point(11)) < 0) i = 11;
+                    if (sign(elem->point(2), elem->point(3)) < 0) i = 11;
                     break;
                   case 11:
-                    if (sign(elem->point(10), elem->point(11)) < 0) i = 10;
+                    if (sign(elem->point(2), elem->point(3)) < 0) i = 10;
                     break;
                   case 12:
                     {
@@ -1322,34 +1322,34 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                     if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
                     break;
                   case 2:
-                    if (sign(elem->point(2), elem->point(3)) < 0) i = 3;
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
                     break;
                   case 3:
-                    if (sign(elem->point(2), elem->point(3)) < 0) i = 2;
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
                     break;
                   case 4:
-                    if (sign(elem->point(4), elem->point(5)) < 0) i = 5;
+                    if (sign(elem->point(0), elem->point(2)) < 0) i = 5;
                     break;
                   case 5:
-                    if (sign(elem->point(4), elem->point(5)) < 0) i = 4;
+                    if (sign(elem->point(0), elem->point(2)) < 0) i = 4;
                     break;
                   case 6:
-                    if (sign(elem->point(6), elem->point(7)) < 0) i = 7;
+                    if (sign(elem->point(0), elem->point(3)) < 0) i = 7;
                     break;
                   case 7:
-                    if (sign(elem->point(6), elem->point(7)) < 0) i = 6;
+                    if (sign(elem->point(0), elem->point(3)) < 0) i = 6;
                     break;
                   case 8:
-                    if (sign(elem->point(8), elem->point(9)) < 0) i = 9;
+                    if (sign(elem->point(1), elem->point(3)) < 0) i = 9;
                     break;
                   case 9:
-                    if (sign(elem->point(8), elem->point(9)) < 0) i = 8;
+                    if (sign(elem->point(1), elem->point(3)) < 0) i = 8;
                     break;
                   case 10:
-                    if (sign(elem->point(10), elem->point(11)) < 0) i = 11;
+                    if (sign(elem->point(2), elem->point(3)) < 0) i = 11;
                     break;
                   case 11:
-                    if (sign(elem->point(10), elem->point(11)) < 0) i = 10;
+                    if (sign(elem->point(2), elem->point(3)) < 0) i = 10;
                     break;
                   case 12:
                     {
@@ -2311,34 +2311,34 @@ RealGradient FE<3,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
                     if (sign(elem->point(0), elem->point(1)) < 0) i = 0;
                     break;
                   case 2:
-                    if (sign(elem->point(2), elem->point(3)) < 0) i = 3;
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 3;
                     break;
                   case 3:
-                    if (sign(elem->point(2), elem->point(3)) < 0) i = 2;
+                    if (sign(elem->point(1), elem->point(2)) < 0) i = 2;
                     break;
                   case 4:
-                    if (sign(elem->point(4), elem->point(5)) < 0) i = 5;
+                    if (sign(elem->point(0), elem->point(2)) < 0) i = 5;
                     break;
                   case 5:
-                    if (sign(elem->point(4), elem->point(5)) < 0) i = 4;
+                    if (sign(elem->point(0), elem->point(2)) < 0) i = 4;
                     break;
                   case 6:
-                    if (sign(elem->point(6), elem->point(7)) < 0) i = 7;
+                    if (sign(elem->point(0), elem->point(3)) < 0) i = 7;
                     break;
                   case 7:
-                    if (sign(elem->point(6), elem->point(7)) < 0) i = 6;
+                    if (sign(elem->point(0), elem->point(3)) < 0) i = 6;
                     break;
                   case 8:
-                    if (sign(elem->point(8), elem->point(9)) < 0) i = 9;
+                    if (sign(elem->point(1), elem->point(3)) < 0) i = 9;
                     break;
                   case 9:
-                    if (sign(elem->point(8), elem->point(9)) < 0) i = 8;
+                    if (sign(elem->point(1), elem->point(3)) < 0) i = 8;
                     break;
                   case 10:
-                    if (sign(elem->point(10), elem->point(11)) < 0) i = 11;
+                    if (sign(elem->point(2), elem->point(3)) < 0) i = 11;
                     break;
                   case 11:
-                    if (sign(elem->point(10), elem->point(11)) < 0) i = 10;
+                    if (sign(elem->point(2), elem->point(3)) < 0) i = 10;
                     break;
                   case 12:
                     {
