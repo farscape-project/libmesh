@@ -31,6 +31,7 @@ inline short sign(const Point p, const Point q)
 
 inline short sign(bool orientation)
 {
+  return 1;
   if(orientation)
     return 1;
   else
@@ -408,49 +409,49 @@ RealGradient FE<3,NEDELEC_ONE>::shape(const Elem * elem,
                   case 12:
                     {
                     std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
-                    if (sign(orientation(arr)) < 0) i = 13;
+                    if (orientation(arr)) i = 13;
                     break;
                     }
                   case 13:
                     {
                     std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
-                    if (sign(orientation(arr)) < 0) i = 12;
+                    if (orientation(arr)) i = 12;
                     break;
                     }
                   case 14:
                     {
                     std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 15;
+                    if (!orientation(arr)) i = 15;
                     break;
                     }
                   case 15:
                     {
                     std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 14;
+                    if (!orientation(arr)) i = 14;
                     break;
                     }
                   case 16:
                     {
                     std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 17;
+                    if (!orientation(arr)) i = 17;
                     break;
                     }
                   case 17:
                     {
                     std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 16;
+                    if (!orientation(arr)) i = 16;
                     break;
                     }
                   case 18:
                     {
                     std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 19;
+                    if (orientation(arr)) i = 19;
                     break;
                     }
                   case 19:
                     {
                     std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 18;
+                    if (orientation(arr)) i = 18;
                     break;
                     }
                 }
@@ -1354,49 +1355,49 @@ RealGradient FE<3,NEDELEC_ONE>::shape_deriv(const Elem * elem,
                   case 12:
                     {
                     std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
-                    if (sign(orientation(arr)) < 0) i = 13;
+                    if (orientation(arr)) i = 13;
                     break;
                     }
                   case 13:
                     {
                     std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
-                    if (sign(orientation(arr)) < 0) i = 12;
+                    if (orientation(arr)) i = 12;
                     break;
                     }
                   case 14:
                     {
                     std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 15;
+                    if (!orientation(arr)) i = 15;
                     break;
                     }
                   case 15:
                     {
                     std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 14;
+                    if (!orientation(arr)) i = 14;
                     break;
                     }
                   case 16:
                     {
                     std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 17;
+                    if (!orientation(arr)) i = 17;
                     break;
                     }
                   case 17:
                     {
                     std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 16;
+                    if (!orientation(arr)) i = 16;
                     break;
                     }
                   case 18:
                     {
                     std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 19;
+                    if (orientation(arr)) i = 19;
                     break;
                     }
                   case 19:
                     {
                     std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 18;
+                    if (orientation(arr)) i = 18;
                     break;
                     }
                 }
@@ -2343,49 +2344,49 @@ RealGradient FE<3,NEDELEC_ONE>::shape_second_deriv(const Elem * elem,
                   case 12:
                     {
                     std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
-                    if (sign(orientation(arr)) < 0) i = 13;
+                    if (orientation(arr)) i = 13;
                     break;
                     }
                   case 13:
                     {
                     std::array<Point, 3> arr = {elem->point(0), elem->point(2), elem->point(1)};
-                    if (sign(orientation(arr)) < 0) i = 12;
+                    if (orientation(arr)) i = 12;
                     break;
                     }
                   case 14:
                     {
                     std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 15;
+                    if (!orientation(arr)) i = 15;
                     break;
                     }
                   case 15:
                     {
                     std::array<Point, 3> arr = {elem->point(0), elem->point(1), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 14;
+                    if (!orientation(arr)) i = 14;
                     break;
                     }
                   case 16:
                     {
                     std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 17;
+                    if (!orientation(arr)) i = 17;
                     break;
                     }
                   case 17:
                     {
                     std::array<Point, 3> arr = {elem->point(1), elem->point(2), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 16;
+                    if (!orientation(arr)) i = 16;
                     break;
                     }
                   case 18:
                     {
                     std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 19;
+                    if (orientation(arr)) i = 19;
                     break;
                     }
                   case 19:
                     {
                     std::array<Point, 3> arr = {elem->point(2), elem->point(0), elem->point(3)};
-                    if (sign(orientation(arr)) < 0) i = 18;
+                    if (orientation(arr)) i = 18;
                     break;
                     }
                 }
