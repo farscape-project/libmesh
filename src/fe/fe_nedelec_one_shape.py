@@ -64,20 +64,22 @@ def get_basis(geom, order, dx, dy, dz):
 
             temp = basis
 
-            basis[         :    order] = temp[        :   order]
-            basis[  order  :  2*order] = temp[3*order : 4*order]
-            basis[2*order  :  3*order] = temp[4*order : 5*order]
-            basis[3*order  :  4*order] = temp[  order : 2*order]
-            basis[4*order  :  5*order] = temp[5*order : 6*order]
-            basis[5*order  :  6*order] = temp[2*order : 3*order]
-            basis[5*order  :  6*order] = [-f for f in basis[5*order  :  6*order]]
+            basis[         :    order] = temp[         :   order]
+            basis[  order  :  2*order] = temp[3*order  : 4*order]
+            basis[2*order  :  3*order] = temp[5*order  : 6*order]
+            basis[2*order  :  3*order] = basis[3*order - 1 : 2*order - 1 : -1]
+            basis[2*order  :  3*order] = [-f for f in basis[2*order  :  3*order]]
+            basis[3*order  :  4*order] = temp[  order  : 2*order]
+            basis[4*order  :  5*order] = temp[2*order  : 3*order]
+            basis[5*order  :  6*order] = temp[4*order  : 5*order]
             basis[6*order  :  7*order] = temp[7*order  : 8*order]
             basis[7*order  :  8*order] = temp[6*order  : 7*order]
             basis[8*order  :  9*order] = temp[8*order  : 9*order]
-            basis[9*order  : 10*order] = temp[11*order : 12*order]
-            basis[10*order : 11*order] = temp[ 9*order : 10*order]
-            basis[11*order : 12*order] = temp[10*order : 11*order]
-            basis[11*order : 12*order] = [-f for f in basis[11*order : 12*order]]
+            basis[9*order  : 10*order] = temp[10*order : 11*order]
+            basis[10*order : 11*order] = temp[11*order : 12*order]
+            basis[10*order : 11*order] = basis[11*order - 1 : 10*order - 1 : -1]
+            basis[10*order : 11*order] = [-f for f in basis[10*order : 11*order]]
+            basis[11*order : 12*order] = temp[ 9*order : 10*order]
 
             basis = basis[: 12*order] + basis[12*order : ]
 
