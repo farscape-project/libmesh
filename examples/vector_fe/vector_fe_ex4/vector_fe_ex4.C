@@ -60,11 +60,14 @@ int main (int argc, char ** argv)
   // Parse the input file
   GetPot infile("vector_fe_ex4.in");
 
+  // But allow the command line to override it.
+  infile.parse_command_line(argc, argv);
+
   // Read in parameters from the input file
   const unsigned int grid_size = infile("grid_size", 2);
 
   // Skip higher-dimensional examples on a lower-dimensional libMesh build
-  libmesh_example_requires(3 <= LIBMESH_DIM, "2D/3D support");
+  libmesh_example_requires(3 <= LIBMESH_DIM, "3D support");
 
   // Create a mesh, with dimension to be overridden later, on the
   // default MPI communicator.
@@ -73,9 +76,7 @@ int main (int argc, char ** argv)
   // Use the MeshTools::Generation mesh generator to create a uniform
   // grid on the square [-1,1]^D. We must use at least TET10 or HEX20 elements
   // for the Nedelec tetrahedral or hexahedral elements, respectively.
-  std::string elem_str =
-    command_line_value(std::string("element_type"),
-                       std::string("HEX27"));
+  const std::string elem_str = infile("element_type", std::string("HEX27"));
 
   // In general we expect O(h) convergence in *both* the L2 and
   // H(curl) norms when using Nedelec elements. For more information
@@ -112,6 +113,15 @@ int main (int argc, char ** argv)
   // Declare the system "CurlCurl" and its variables.
   CurlCurlSystem & system =
     equation_systems.add_system<CurlCurlSystem> ("CurlCurl");
+
+  // Set the FE approximation order.
+  const Order order = static_cast<Order>(infile("order", 1u));
+
+  libmesh_error_msg_if(order != FIRST && order != SECOND,
+                       "You selected: " << order <<
+                       " but this example must be run with either order 1 or 2.");
+
+  system.order(order);
 
   // This example only implements the steady-state problem
   system.time_solver = std::make_unique<SteadySolver>(system);
