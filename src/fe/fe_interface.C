@@ -2860,11 +2860,12 @@ unsigned int FEInterface::max_order(const FEType & fe_t,
         case TRI7:
         case QUAD8:
         case QUAD9:
+          return 1;
         case TET10:
         case TET14:
         case HEX20:
         case HEX27:
-          return 1;
+          return 2;
         default:
           return 0;
         }
