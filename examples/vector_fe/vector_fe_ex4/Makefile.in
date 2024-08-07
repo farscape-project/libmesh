@@ -170,8 +170,9 @@ CONFIG_CLEAN_VPATH_FILES =
 @LIBMESH_PROF_MODE_TRUE@am__EXEEXT_4 = example-prof$(EXEEXT)
 @LIBMESH_OPROF_MODE_TRUE@am__EXEEXT_5 = example-oprof$(EXEEXT)
 am__example_dbg_SOURCES_DIST = curl_curl_exact_solution.h \
-	vector_fe_ex4.in curl_curl_system.C solution_function.h \
-	curl_curl_system.h vector_fe_ex4.C run.sh
+	curl_curl_exact_solution_alt.h vector_fe_ex4.in \
+	curl_curl_system.C solution_function.h curl_curl_system.h \
+	vector_fe_ex4.C run.sh
 am__objects_1 = example_dbg-curl_curl_system.$(OBJEXT) \
 	example_dbg-vector_fe_ex4.$(OBJEXT)
 am__objects_2 = $(am__objects_1)
@@ -187,8 +188,9 @@ example_dbg_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(example_dbg_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am__example_devel_SOURCES_DIST = curl_curl_exact_solution.h \
-	vector_fe_ex4.in curl_curl_system.C solution_function.h \
-	curl_curl_system.h vector_fe_ex4.C run.sh
+	curl_curl_exact_solution_alt.h vector_fe_ex4.in \
+	curl_curl_system.C solution_function.h curl_curl_system.h \
+	vector_fe_ex4.C run.sh
 am__objects_3 = example_devel-curl_curl_system.$(OBJEXT) \
 	example_devel-vector_fe_ex4.$(OBJEXT)
 am__objects_4 = $(am__objects_3)
@@ -201,8 +203,9 @@ example_devel_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(example_devel_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am__example_oprof_SOURCES_DIST = curl_curl_exact_solution.h \
-	vector_fe_ex4.in curl_curl_system.C solution_function.h \
-	curl_curl_system.h vector_fe_ex4.C run.sh
+	curl_curl_exact_solution_alt.h vector_fe_ex4.in \
+	curl_curl_system.C solution_function.h curl_curl_system.h \
+	vector_fe_ex4.C run.sh
 am__objects_5 = example_oprof-curl_curl_system.$(OBJEXT) \
 	example_oprof-vector_fe_ex4.$(OBJEXT)
 am__objects_6 = $(am__objects_5)
@@ -215,8 +218,9 @@ example_oprof_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(example_oprof_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am__example_opt_SOURCES_DIST = curl_curl_exact_solution.h \
-	vector_fe_ex4.in curl_curl_system.C solution_function.h \
-	curl_curl_system.h vector_fe_ex4.C run.sh
+	curl_curl_exact_solution_alt.h vector_fe_ex4.in \
+	curl_curl_system.C solution_function.h curl_curl_system.h \
+	vector_fe_ex4.C run.sh
 am__objects_7 = example_opt-curl_curl_system.$(OBJEXT) \
 	example_opt-vector_fe_ex4.$(OBJEXT)
 am__objects_8 = $(am__objects_7)
@@ -228,8 +232,9 @@ example_opt_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(example_opt_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am__example_prof_SOURCES_DIST = curl_curl_exact_solution.h \
-	vector_fe_ex4.in curl_curl_system.C solution_function.h \
-	curl_curl_system.h vector_fe_ex4.C run.sh
+	curl_curl_exact_solution_alt.h vector_fe_ex4.in \
+	curl_curl_system.C solution_function.h curl_curl_system.h \
+	vector_fe_ex4.C run.sh
 am__objects_9 = example_prof-curl_curl_system.$(OBJEXT) \
 	example_prof-vector_fe_ex4.$(OBJEXT)
 am__objects_10 = $(am__objects_9)
@@ -714,7 +719,7 @@ vtkversion = @vtkversion@
 example_name = vector_fe_ex4
 check_SCRIPTS = run.sh # Convergence too poor with default solvers
 install_dir = $(examples_install_path)/vector_fe/ex4
-data = curl_curl_exact_solution.h vector_fe_ex4.in curl_curl_system.C solution_function.h curl_curl_system.h vector_fe_ex4.C run.sh
+data = curl_curl_exact_solution.h curl_curl_exact_solution_alt.h vector_fe_ex4.in curl_curl_system.C solution_function.h curl_curl_system.h vector_fe_ex4.C run.sh
 sources = $(data) run.sh
 
 ######################################################################
