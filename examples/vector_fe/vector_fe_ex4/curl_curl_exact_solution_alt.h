@@ -31,33 +31,33 @@ public:
 
   RealGradient operator()(Real x, Real y, Real z)
   {
-    const Real ux = sin(k*y);
-    const Real uy = sin(k*z);
-    const Real uz = sin(k*x);
+    const Real ux = sin(kx*x + ky*y + kz*z);
+    const Real uy = sin(kx*x + ky*y + kz*z);
+    const Real uz = sin(kx*x + ky*y + kz*z);
 
     return RealGradient(ux, uy, uz);
   }
 
   RealTensor grad(Real x, Real y, Real z)
   {
-    const Real dux_dy = k*cos(k*y);
-    const Real duy_dz = k*cos(k*z);
-    const Real duz_dx = k*cos(k*x);
+    const Real du_dx = kx*cos(kx*x + ky*y + kz*z);
+    const Real du_dy = ky*cos(kx*x + ky*y + kz*z);
+    const Real du_dz = kz*cos(kx*x + ky*y + kz*z);
 
-    return RealTensor(0, dux_dy, 0, 0, 0, duy_dz, duz_dx, 0, 0);
+    return RealTensor(du_dx, du_dy, du_dz, du_dx, du_dy, du_dz, du_dx, du_dy, du_dz);
   }
 
   RealGradient forcing(Real x, Real y, Real z)
   {
-    const Real fx = (1 + k*k)*sin(k*y);
-    const Real fy = (1 + k*k)*sin(k*z);
-    const Real fz = (1 + k*k)*sin(k*x);
+    const Real fx = (1 + ky*ky + kz*kz - kx*(ky + kz))*sin(kx*x + ky*y + kz*z);
+    const Real fy = (1 + kx*kx + kz*kz - ky*(kx + kz))*sin(kx*x + ky*y + kz*z);
+    const Real fz = (1 + kx*kx + ky*ky - kz*(kx + ky))*sin(kx*x + ky*y + kz*z);
 
     return RealGradient(fx, fy, fz);
   }
 
 private:
-  const Real k = .5*pi;
+  const Real kx = .3*pi, ky = .4*pi, kz = .5*pi;
 };
 
 #endif // CURL_CURL_EXACT_SOLUTION_H
