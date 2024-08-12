@@ -24,6 +24,40 @@
 namespace libMesh
 {
 
+bool edge_orientation(const Elem * elem, const unsigned int & edge)
+{
+  return elem->point(elem->local_edge_node(edge, 0)) >
+         elem->point(elem->local_edge_node(edge, 1));
+}
+
+bool face_orientation(const Elem * elem, const unsigned int & face)
+{
+  std::vector<unsigned int> vertices = elem->nodes_on_side(face);
+
+  const unsigned int N = Elem::type_to_n_nodes_map[elem->side_type(face)];
+  vertices.resize(N);
+
+  if (N % 2 == 0)
+    std::rotate(vertices.begin(), std::min_element(vertices.begin(), vertices.end()), vertices.end());
+
+  unsigned int cnt = 0;
+  for(unsigned int i = 0; i < N; i++)
+    for(unsigned int j = i + 1; j < N; j++)
+      if (vertices[i] > vertices[j]) cnt++;
+  return cnt % 2;
+}
+
+unsigned int face_rotation(const Elem * elem, const unsigned int & face)
+{
+  std::vector<unsigned int> vertices = elem->nodes_on_side(face);
+
+  const unsigned int N = Elem::type_to_n_nodes_map[elem->side_type(face)];
+  vertices.resize(N);
+
+  return std::distance(vertices.begin(), std::min_element(vertices.begin(), vertices.end()));
+}
+
+
 template <>
 RealGradient FE<3,NEDELEC_ONE>::shape(const Elem * elem,
                                       const Order order,
@@ -37,8 +71,9 @@ RealGradient FE<3,NEDELEC_ONE>::shape(const Elem * elem,
   const Order totalorder = static_cast<Order>(order + add_p_level * elem->p_level());
   libmesh_assert_less(i, n_dofs(elem->type(), totalorder));
 
-  const char sign = i >= totalorder * elem->n_edges() || elem->point(elem->local_edge_node(i / totalorder, 0)) > elem->point(elem->local_edge_node(i / totalorder, 1)) ? 1 : -1;
-  const unsigned int ii = sign > 0 ? i : (i / totalorder * 2 + 1) * totalorder - 1 - i;
+  const char sign = i >= totalorder * elem->n_edges() || edge_orientation(elem, i / totalorder) ? 1 : -1;
+  const unsigned int ii = i >= totalorder * elem->n_edges() ? i :
+                          sign > 0 ? i : (i / totalorder * 2 + 1) * totalorder - 1 - i;
 
   const Real xi   = p(0);
   const Real eta  = p(1);
