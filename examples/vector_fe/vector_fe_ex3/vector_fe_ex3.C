@@ -41,6 +41,7 @@
 #include "libmesh/diff_solver.h"
 #include "libmesh/steady_solver.h"
 #include "solution_function.h"
+#include "hypre_ams.h"
 
 
 // Bring in everything from the libMesh namespace
@@ -131,6 +132,8 @@ int main (int argc, char ** argv)
 
   // Print information about the system to the screen.
   equation_systems.print_info();
+
+  HypreAMS hypreams(system);
 
   system.solve();
 
