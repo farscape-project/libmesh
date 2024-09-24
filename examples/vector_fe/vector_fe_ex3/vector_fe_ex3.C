@@ -133,7 +133,7 @@ int main (int argc, char ** argv)
   // Print information about the system to the screen.
   equation_systems.print_info();
 
-  HypreAMS hypreams(system);
+  BuildHypreAMS(system);
 
   system.solve();
 
