@@ -22,10 +22,12 @@
 // Local Includes
 #include "libmesh/petsc_preconditioner.h"
 #include "libmesh/petsc_macro.h"
-#include "libmesh/petsc_matrix_base.h"
+#include "libmesh/petsc_matrix.h"
 #include "libmesh/petsc_vector.h"
 #include "libmesh/libmesh_common.h"
 #include "libmesh/enum_preconditioner_type.h"
+#include "libmesh/elem.h"
+#include "libmesh/equation_systems.h"
 
 namespace libMesh
 {
@@ -308,6 +310,95 @@ void PetscPreconditioner<T>::set_petsc_subpreconditioner_type(const PCType type,
 template <typename T>
 void PetscPreconditioner<T>::set_petsc_hypre_aux_data(PC & pc, System * sys)
 {
+  // Get the hypre preconditioner we are using
+  const char * hypre_type = nullptr;
+  LibmeshPetscCall(PCHYPREGetType(pc, &hypre_type));
+
+  // If not ams or not a 1st order Nédélec system, we quit as we do not support anything else at the moment
+  if (!hypre_type || std::string(hypre_type) != "ams" || !sys || sys->n_vars() != 1 || sys->variable(0).type() != FEType(1, NEDELEC_ONE))
+    return;
+
+  // The mesh we build the preconditioner for
+  const MeshBase & mesh = sys->get_equation_systems().get_mesh();
+
+  // Dummy Lagrange system defined over the same mesh so we can enumerate the vertices
+  System & lagrange_sys = sys->get_equation_systems().add_system<System>("dummy");
+  lagrange_sys.add_variable("dummy");
+  lagrange_sys.get_equation_systems().reinit_mesh();
+
+  // Global (i.e. total) and local (i.e. to this processor) number of edges and vertices
+  const dof_id_type n_glb_edges = sys->n_dofs();
+  const dof_id_type n_loc_edges = sys->n_local_dofs();
+  const dof_id_type n_glb_vertices = lagrange_sys.n_dofs();
+  const dof_id_type n_loc_vertices = lagrange_sys.n_local_dofs();
+
+  // Create the discrete grandient matrix, representing the edges in terms of its vertices
+  PetscMatrix<Real> G(mesh.comm());
+  G.init(n_glb_edges, n_glb_vertices, n_loc_edges, n_loc_vertices, 2, 2);
+
+  // Create vectors for the coordinates of the vertices
+  PetscVector<Real> x(mesh.comm(), n_glb_vertices, n_loc_vertices);
+  PetscVector<Real> y(mesh.comm(), n_glb_vertices, n_loc_vertices);
+  PetscVector<Real> z(mesh.comm(), n_glb_vertices, n_loc_vertices);
+
+  // Create vectors for the mat-vec products, representing constant vector fields in the Nédélec basis
+  PetscVector<Real> Gx(mesh.comm(), n_glb_edges, n_loc_edges);
+  PetscVector<Real> Gy(mesh.comm(), n_glb_edges, n_loc_edges);
+  PetscVector<Real> Gz(mesh.comm(), n_glb_edges, n_loc_edges);
+
+  // Populate the discrete gradient matrix and the coordinate vectors
+  for (const auto & elem : mesh.active_local_element_ptr_range())
+    for(unsigned int edge = 0; edge < elem->n_edges(); edge++)
+    {
+      // The edge's first vertex: if owned, populate coordinate vectors
+      const Node & vert_node = elem->node_ref(elem->local_edge_node(edge, 0));
+      const dof_id_type vert_dof = vert_node.dof_number(lagrange_sys.number(), 0, 0);
+
+      if (vert_node.processor_id() == global_processor_id())
+      {
+        x.set(vert_dof, vert_node(0));
+        y.set(vert_dof, vert_node(1));
+        z.set(vert_dof, vert_node(2));
+      }
+
+      // The edge's second vertex: if owned, populate coordinate vectors
+      const Node & wert_node = elem->node_ref(elem->local_edge_node(edge, 1));
+      const dof_id_type wert_dof = wert_node.dof_number(lagrange_sys.number(), 0, 0);
+
+      if (wert_node.processor_id() == global_processor_id())
+      {
+        x.set(wert_dof, wert_node(0));
+        y.set(wert_dof, wert_node(1));
+        z.set(wert_dof, wert_node(2));
+      }
+
+      // The edge's (middle) node: if owned, populate discrete gradient matrix
+      const Node & edge_node = elem->node_ref(elem->local_edge_node(edge, 2));
+      const dof_id_type edge_dof = edge_node.dof_number(sys->number(), 0, 0);
+
+      if (edge_node.processor_id() == global_processor_id())
+      {
+        const Real sign = vert_node > wert_node ? 1 : -1;
+
+        G.set(edge_dof, vert_dof,  sign);
+        G.set(edge_dof, wert_dof, -sign);
+      }
+    }
+
+  // Assemble the discrete gradient matrix and the coordinate vectors
+  G.close();
+  x.close();
+  y.close();
+  z.close();
+
+  // Compute the matrix-vector products
+  G.vector_mult(Gx, x);
+  G.vector_mult(Gy, y);
+  G.vector_mult(Gz, z);
+
+  // Get the preconditioner object associated with system's linear solver and hand over the matrix and vectors
+  LibmeshPetscCall(PCHYPRESetDiscreteGradient(pc, G.mat()));
+  LibmeshPetscCall(PCHYPRESetEdgeConstantVectors(pc, Gx.vec(), Gy.vec(), Gz.vec()));
 }
 #endif
 
