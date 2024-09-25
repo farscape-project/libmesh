@@ -88,7 +88,6 @@ void BuildHypreAMS(FEMSystem & sys)
 
       G.set(edge_dof, vert_dof,  sign);
       G.set(edge_dof, wert_dof, -sign);
-
     }
 
   // Assemble the discrete gradient matrix and the coordinate vectors
@@ -103,7 +102,10 @@ void BuildHypreAMS(FEMSystem & sys)
   G.vector_mult(Gz, z);
 
   // Get the preconditioner object associated with system's linear solver and hand over the matrix and vectors
-  const PC & pc = dynamic_cast<PetscLinearSolver<double> &>(dynamic_cast<NewtonSolver &>(*(nedelec_sys.time_solver->diff_solver().get())).get_linear_solver()).pc();
+  PC pc;
+  const KSP & ksp = dynamic_cast<PetscLinearSolver<double> &>(dynamic_cast<NewtonSolver &>(*(nedelec_sys.time_solver->diff_solver().get())).get_linear_solver()).ksp();
+  LibmeshPetscCall(KSPGetPC(ksp, &pc));
+
   LibmeshPetscCall(PCHYPRESetDiscreteGradient(pc, G.mat()));
   LibmeshPetscCall(PCHYPRESetEdgeConstantVectors(pc, Gx.vec(), Gy.vec(), Gz.vec()));
 }
