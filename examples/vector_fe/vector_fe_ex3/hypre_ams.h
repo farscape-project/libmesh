@@ -68,35 +68,27 @@ void BuildHypreAMS(FEMSystem & sys)
       const Node & vert_node = elem->node_ref(elem->local_edge_node(edge, 0));
       const dof_id_type vert_dof = vert_node.dof_number(lagrange_sys.number(), 0, 0);
 
-      if (vert_node.processor_id() == global_processor_id())
-      {
-        x.set(vert_dof, vert_node(0));
-        y.set(vert_dof, vert_node(1));
-        z.set(vert_dof, vert_node(2));
-      }
+      x.set(vert_dof, vert_node(0));
+      y.set(vert_dof, vert_node(1));
+      z.set(vert_dof, vert_node(2));
 
       // The edge's second vertex: if owned, populate coordinate vectors
       const Node & wert_node = elem->node_ref(elem->local_edge_node(edge, 1));
       const dof_id_type wert_dof = wert_node.dof_number(lagrange_sys.number(), 0, 0);
 
-      if (wert_node.processor_id() == global_processor_id())
-      {
-        x.set(wert_dof, wert_node(0));
-        y.set(wert_dof, wert_node(1));
-        z.set(wert_dof, wert_node(2));
-      }
+      x.set(wert_dof, wert_node(0));
+      y.set(wert_dof, wert_node(1));
+      z.set(wert_dof, wert_node(2));
 
       // The edge's (middle) node: if owned, populate discrete gradient matrix
       const Node & edge_node = elem->node_ref(elem->local_edge_node(edge, 2));
       const dof_id_type edge_dof = edge_node.dof_number(nedelec_sys.number(), 0, 0);
 
-      if (edge_node.processor_id() == global_processor_id())
-      {
-        const Real sign = vert_node > wert_node ? 1 : -1;
+      const Real sign = vert_node > wert_node ? 1 : -1;
 
-        G.set(edge_dof, vert_dof,  sign);
-        G.set(edge_dof, wert_dof, -sign);
-      }
+      G.set(edge_dof, vert_dof,  sign);
+      G.set(edge_dof, wert_dof, -sign);
+
     }
 
   // Assemble the discrete gradient matrix and the coordinate vectors
