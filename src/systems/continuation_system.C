@@ -19,6 +19,7 @@
 #include "libmesh/equation_systems.h"
 #include "libmesh/continuation_system.h"
 #include "libmesh/linear_solver.h"
+#include "libmesh/petsc_linear_solver.h"
 #include "libmesh/time_solver.h"
 #include "libmesh/newton_solver.h"
 #include "libmesh/numeric_vector.h"
@@ -64,6 +65,14 @@ ContinuationSystem::ContinuationSystem (EquationSystems & es,
   // going to keep using it basically the way we did before it was
   // moved.
   linear_solver = LinearSolver<Number>::build(es.comm());
+
+#ifdef LIBMESH_HAVE_PETSC
+  if (default_solver_package() == PETSC_SOLVERS)
+  {
+    ContinuationSystem * me = const_cast<ContinuationSystem *>(this);
+    dynamic_cast<PetscLinearSolver<Number> &>(*linear_solver).attach_system(me);
+  }
+#endif
 
   if (libMesh::on_command_line("--solver-system-names"))
     linear_solver->init((this->name()+"_").c_str());

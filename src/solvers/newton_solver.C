@@ -20,6 +20,7 @@
 #include "libmesh/dof_map.h"
 #include "libmesh/libmesh_logging.h"
 #include "libmesh/linear_solver.h"
+#include "libmesh/petsc_linear_solver.h"
 #include "libmesh/newton_solver.h"
 #include "libmesh/numeric_vector.h"
 #include "libmesh/sparse_matrix.h"
@@ -244,6 +245,10 @@ NewtonSolver::NewtonSolver (sys_type & s)
     linear_tolerance_multiplier(1e-3),
     _linear_solver(LinearSolver<Number>::build(s.comm()))
 {
+#ifdef LIBMESH_HAVE_PETSC
+  if (default_solver_package() == PETSC_SOLVERS)
+    dynamic_cast<PetscLinearSolver<Number> &>(*_linear_solver).attach_system(&_system);
+#endif
 }
 
 
