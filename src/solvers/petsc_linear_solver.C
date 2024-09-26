@@ -144,6 +144,15 @@ void PetscLinearSolver<T>::clear ()
 
 
 template <typename T>
+void PetscLinearSolver<T>::attach_system (System * sys)
+{
+  libmesh_assert(sys);
+  _system = sys;
+}
+
+
+
+template <typename T>
 void PetscLinearSolver<T>::init (const char * name)
 {
   // Initialize the data structures if not done so already.
@@ -211,6 +220,9 @@ void PetscLinearSolver<T>::init (const char * name)
       LIBMESH_CHKERR(ierr);
 
       PetscPreconditioner<T>::set_petsc_preconditioner_type(this->_preconditioner_type,_pc);
+#ifdef LIBMESH_HAVE_PETSC_HYPRE
+      PetscPreconditioner<T>::set_petsc_hypre_aux_data(_pc, _system);
+#endif
 
       //If there is a preconditioner object we need to set the internal setup and apply routines
       if (this->_preconditioner)
