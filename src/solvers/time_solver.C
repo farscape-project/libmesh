@@ -20,8 +20,9 @@
 #include "libmesh/diff_solver.h"
 #include "libmesh/diff_system.h"
 #include "libmesh/linear_solver.h"
+#include "libmesh/petsc_linear_solver.h"
 #include "libmesh/no_solution_history.h"
-
+#include "libmesh/enum_solver_package.h"
 #include "libmesh/adjoint_refinement_estimator.h"
 #include "libmesh/error_vector.h"
 
@@ -78,6 +79,11 @@ void TimeSolver::init ()
 
   if (this->linear_solver().get() == nullptr)
     this->linear_solver() = LinearSolver<Number>::build(_system.comm());
+
+#ifdef LIBMESH_HAVE_PETSC
+  if (default_solver_package() == PETSC_SOLVERS)
+    dynamic_cast<PetscLinearSolver<Number> &>(*_linear_solver).attach_system(&_system);
+#endif
 }
 
 void TimeSolver::init_adjoints ()

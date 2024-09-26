@@ -22,6 +22,7 @@
 // Local includes
 #include "libmesh/linear_implicit_system.h"
 #include "libmesh/linear_solver.h"
+#include "libmesh/petsc_linear_solver.h"
 #include "libmesh/equation_systems.h"
 #include "libmesh/numeric_vector.h" // for parameter sensitivity calcs
 //#include "libmesh/parameter_vector.h"
@@ -49,6 +50,14 @@ LinearImplicitSystem::LinearImplicitSystem (EquationSystems & es,
   // going to keep using it basically the way we did before it was
   // moved.
   linear_solver = LinearSolver<Number>::build(es.comm());
+
+#ifdef LIBMESH_HAVE_PETSC
+  if (default_solver_package() == PETSC_SOLVERS)
+  {
+    LinearImplicitSystem * me = const_cast<LinearImplicitSystem *>(this);
+    dynamic_cast<PetscLinearSolver<Number> &>(*linear_solver).attach_system(me);
+  }
+#endif
 }
 
 

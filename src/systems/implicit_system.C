@@ -24,6 +24,7 @@
 #include "libmesh/int_range.h"
 #include "libmesh/libmesh_logging.h"
 #include "libmesh/linear_solver.h"
+#include "libmesh/petsc_linear_solver.h"
 #include "libmesh/mesh_base.h"
 #include "libmesh/numeric_vector.h"
 #include "libmesh/parameters.h"
@@ -1207,6 +1208,14 @@ LinearSolver<Number> * ImplicitSystem::get_linear_solver() const
   linear_solver.reset();
 
   linear_solver = LinearSolver<Number>::build(this->comm());
+
+#ifdef LIBMESH_HAVE_PETSC
+  if (default_solver_package() == PETSC_SOLVERS)
+  {
+    ImplicitSystem * me = const_cast<ImplicitSystem *>(this);
+    dynamic_cast<PetscLinearSolver<Number> &>(*linear_solver).attach_system(me);
+  }
+#endif
 
   if (libMesh::on_command_line("--solver-system-names"))
     linear_solver->init((this->name() + "_").c_str());
