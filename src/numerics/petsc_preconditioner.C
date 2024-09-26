@@ -312,6 +312,7 @@ void PetscPreconditioner<T>::set_petsc_hypre_aux_data(PC & pc, System * sys)
 {
   // Get the hypre preconditioner we are using
   const char * hypre_type = nullptr;
+  LibmeshPetscCall(PCSetFromOptions(pc));
   LibmeshPetscCall(PCHYPREGetType(pc, &hypre_type));
 
   // If not ams or not a 1st order Nédélec system, we quit as we do not support anything else at the moment
