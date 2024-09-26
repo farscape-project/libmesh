@@ -115,6 +115,11 @@ public:
   virtual void clear () override;
 
   /**
+   * Attach a pointer to the system we are solving.
+   */
+  void attach_system(System * sys);
+
+  /**
    * Initialize data structures if not done so already.
    * Assigns a name, which is turned into an underscore-separated
    * prefix for the underlying KSP object.
@@ -363,6 +368,11 @@ private:
    * what happens with the dofs outside the subset.
    */
   SubsetSolveMode _subset_solve_mode;
+
+  /**
+   * A pointer to the system we are solving.
+   */
+  System * _system = nullptr;
 };
 
 } // namespace libMesh

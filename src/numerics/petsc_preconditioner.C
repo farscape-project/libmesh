@@ -304,6 +304,12 @@ void PetscPreconditioner<T>::set_petsc_subpreconditioner_type(const PCType type,
 }
 
 
+#ifdef LIBMESH_HAVE_PETSC_HYPRE
+template <typename T>
+void PetscPreconditioner<T>::set_petsc_hypre_aux_data(PC & pc, System * sys)
+{
+}
+#endif
 
 
 //------------------------------------------------------------------
