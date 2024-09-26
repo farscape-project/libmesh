@@ -32,7 +32,7 @@
 #include "libmesh/preconditioner.h"
 #include "libmesh/solver_configuration.h"
 #include "libmesh/petscdmlibmesh.h"
-#include "libmesh/petsc_mffd_matrix.h"
+#include "libmesh/petsc_preconditioner.h"
 
 #ifdef LIBMESH_HAVE_PETSC_HYPRE
 #include <HYPRE_utilities.h>
@@ -850,13 +850,16 @@ void PetscNonlinearSolver<T>::init (const char * name)
           this->_solver_configuration->set_options_during_init();
         }
 
+      KSP ksp;
+      LibmeshPetscCall(SNESGetKSP (_snes, &ksp));
+      PC pc;
+      LibmeshPetscCall(KSPGetPC(ksp,&pc));
+#ifdef LIBMESH_HAVE_PETSC_HYPRE
+      PetscPreconditioner<T>::set_petsc_hypre_aux_data(pc, &(this->system()));
+#endif
+
       if (this->_preconditioner)
         {
-          KSP ksp;
-          LibmeshPetscCall(SNESGetKSP (_snes, &ksp));
-          PC pc;
-          LibmeshPetscCall(KSPGetPC(ksp,&pc));
-
           this->_preconditioner->init();
 
           LibmeshPetscCall(PCSetType(pc, PCSHELL));
