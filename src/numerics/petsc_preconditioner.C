@@ -325,7 +325,7 @@ void PetscPreconditioner<T>::set_petsc_hypre_aux_data(PC & pc, System * sys)
   // Dummy Lagrange system defined over the same mesh so we can enumerate the vertices
   System & lagrange_sys = sys->get_equation_systems().add_system<System>("dummy");
   lagrange_sys.add_variable("dummy");
-  lagrange_sys.get_equation_systems().reinit_mesh();
+  lagrange_sys.reinit_mesh();
 
   // Global (i.e. total) and local (i.e. to this processor) number of edges and vertices
   const dof_id_type n_glb_edges = sys->n_dofs();
