@@ -802,17 +802,14 @@ void PetscNonlinearSolver<T>::init (const char * name)
 
       // Make only if we don't already have a retained snes
       // hanging around from the last solve
-      if (!_snes) {
+      if (!_snes)
         LibmeshPetscCall(SNESCreate(this->comm().get(), _snes.get()));
-      }
 
       // I believe all of the following can be safely repeated
       // even on an old snes instance from the last solve
 
       if (name)
-        {
-          LibmeshPetscCall(SNESSetOptionsPrefix(_snes, name));
-        }
+        LibmeshPetscCall(SNESSetOptionsPrefix(_snes, name));
 
       // Attaching a DM to SNES.
       {
@@ -820,10 +817,10 @@ void PetscNonlinearSolver<T>::init (const char * name)
         LibmeshPetscCall(DMCreate(this->comm().get(), dm.get()));
         LibmeshPetscCall(DMSetType(dm, DMLIBMESH));
         LibmeshPetscCall(DMlibMeshSetSystem(dm, this->system()));
+
         if (name)
-          {
-            LibmeshPetscCall(DMSetOptionsPrefix(dm, name));
-          }
+          LibmeshPetscCall(DMSetOptionsPrefix(dm, name));
+
         LibmeshPetscCall(DMSetFromOptions(dm));
         LibmeshPetscCall(DMSetUp(dm));
         LibmeshPetscCall(SNESSetDM(_snes, dm));
@@ -939,9 +936,7 @@ PetscNonlinearSolver<T>::build_mat_null_space(NonlinearImplicitSystem::ComputeVe
       LibmeshPetscCall(MatNullSpaceCreate(this->comm().get(), PETSC_FALSE, nmodes, modes.data(), msp));
 
       for (PetscInt i=0; i<nmodes; ++i)
-        {
-          LibmeshPetscCall(VecDestroy(&modes[i]));
-        }
+        LibmeshPetscCall(VecDestroy(&modes[i]));
     }
 }
 
@@ -1000,9 +995,7 @@ PetscNonlinearSolver<T>::solve (SparseMatrix<T> &  pre_in,  // System Preconditi
   // Only set the jacobian function if we've been provided with something to call.
   // This allows a user to set their own jacobian function if they want to
   if (this->jacobian || this->jacobian_object || this->residual_and_jacobian_object)
-    {
-      LibmeshPetscCall(SNESSetJacobian (_snes, pre->mat(), pre->mat(), libmesh_petsc_snes_jacobian, this));
-    }
+    LibmeshPetscCall(SNESSetJacobian (_snes, pre->mat(), pre->mat(), libmesh_petsc_snes_jacobian, this));
 
 
   // Only set the nullspace if we have a way of computing it and the result is non-empty.
@@ -1011,9 +1004,7 @@ PetscNonlinearSolver<T>::solve (SparseMatrix<T> &  pre_in,  // System Preconditi
       WrappedPetsc<MatNullSpace> msp;
       this->build_mat_null_space(this->nullspace_object, this->nullspace, msp.get());
       if (msp)
-        {
-          LibmeshPetscCall(MatSetNullSpace(pre->mat(), msp));
-        }
+        LibmeshPetscCall(MatSetNullSpace(pre->mat(), msp));
     }
 
   // Only set the transpose nullspace if we have a way of computing it and the result is non-empty.
@@ -1025,9 +1016,7 @@ PetscNonlinearSolver<T>::solve (SparseMatrix<T> &  pre_in,  // System Preconditi
       WrappedPetsc<MatNullSpace> msp;
       this->build_mat_null_space(this->transpose_nullspace_object, this->transpose_nullspace, msp.get());
       if (msp)
-        {
-          LibmeshPetscCall(MatSetTransposeNullSpace(pre->mat(), msp));
-        }
+        LibmeshPetscCall(MatSetTransposeNullSpace(pre->mat(), msp));
 #endif
     }
 
@@ -1038,9 +1027,7 @@ PetscNonlinearSolver<T>::solve (SparseMatrix<T> &  pre_in,  // System Preconditi
       this->build_mat_null_space(this->nearnullspace_object, this->nearnullspace, msp.get());
 
       if (msp)
-        {
-          LibmeshPetscCall(MatSetNearNullSpace(pre->mat(), msp));
-        }
+        LibmeshPetscCall(MatSetNearNullSpace(pre->mat(), msp));
     }
 
   // Have the Krylov subspace method use our good initial guess rather than 0
@@ -1197,9 +1184,7 @@ template <typename T>
 SNESConvergedReason PetscNonlinearSolver<T>::get_converged_reason()
 {
   if (this->initialized())
-    {
-      LibmeshPetscCall(SNESGetConvergedReason(_snes, &_reason));
-    }
+    LibmeshPetscCall(SNESGetConvergedReason(_snes, &_reason));
 
   return _reason;
 }
@@ -1214,10 +1199,8 @@ template <typename T>
 void PetscNonlinearSolver<T>::setup_default_monitor()
 {
   if (_default_monitor)
-    {
-      LibmeshPetscCall(
-          SNESMonitorSet(_snes, libmesh_petsc_snes_monitor, this, LIBMESH_PETSC_NULLPTR));
-    }
+    LibmeshPetscCall(
+      SNESMonitorSet(_snes, libmesh_petsc_snes_monitor, this, LIBMESH_PETSC_NULLPTR));
 }
 
 template <typename T>
