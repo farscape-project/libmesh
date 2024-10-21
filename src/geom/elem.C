@@ -3404,4 +3404,37 @@ Elem::is_internal(const unsigned int i) const
   }
 }
 
+bool
+Elem::edge_orientation(const unsigned int i) const
+{
+  libmesh_assert_less (i, this->n_edges());
+
+  return this->point(this->local_edge_node(i, 0)) >
+         this->point(this->local_edge_node(i, 1));
+}
+
+bool
+Elem::face_orientation(const unsigned int i) const
+{
+  libmesh_assert_less (i, this->n_faces());
+
+  const unsigned int N = Elem::type_to_n_sides_map[this->side_type(i)];
+
+  const std::vector<unsigned int> nodes = this->nodes_on_side(i);
+  std::vector<Point> vertices(N);
+  std::transform(nodes.begin(), nodes.begin() + N, vertices.begin(),
+                 [&](unsigned n) { return this->point(n); });
+
+  for(unsigned int i = 0; i < N - 3; i++)
+    std::rotate(vertices.begin() + i,
+                std::min_element(vertices.begin() + i, vertices.end()),
+                vertices.end());
+
+  unsigned int cnt = 0;
+  for(unsigned int i = N - 3; i < N; i++)
+    for(unsigned int j = i + 1; j < N; j++)
+      if (vertices[i] > vertices[j]) cnt++;
+  return cnt % 2;
+}
+
 } // namespace libMesh
