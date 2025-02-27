@@ -35,6 +35,7 @@
 #include "libmesh/mesh.h"
 #include "libmesh/mesh_generation.h"
 #include "libmesh/mesh_modification.h"
+#include "libmesh/mesh_refinement.h"
 
 // Matrix and vector types.
 #include "libmesh/dense_matrix.h"
@@ -121,14 +122,19 @@ int main (int argc, char ** argv)
       "You selected '" << bc_str << "', however, the valid options are 'dirichlet' or 'neumann'");
   const bool neumann = (bc_str == "neumann");
 
-  if (dimension == 2)
+  ExodusII_IO(mesh).read("star.e");
+  mesh.all_second_order();
+  MeshRefinement mesh_refinement(mesh);
+  mesh_refinement.uniformly_refine(6);
+
+  if (dimension == 6)
     MeshTools::Generation::build_square (mesh,
                                          grid_size,
                                          grid_size,
                                          -1., 1.,
                                          -1., 1.,
                                          Utility::string_to_enum<ElemType>(elem_str));
-  else if (dimension == 3)
+  else if (dimension == 7)
     MeshTools::Generation::build_cube (mesh,
                                        grid_size,
                                        grid_size,
@@ -139,7 +145,7 @@ int main (int argc, char ** argv)
                                        Utility::string_to_enum<ElemType>(elem_str));
 
   // Make sure the code is robust against nodal reorderings.
-  MeshTools::Modification::permute_elements(mesh);
+  // MeshTools::Modification::permute_elements(mesh);
 
   // Print information about the mesh to the screen.
   mesh.print_info();
@@ -444,7 +450,7 @@ void assemble_divgrad(EquationSystems & es,
           for (unsigned int k = 0; k != scalar_n_dofs; k++)
             for (unsigned int j = 0; j != vector_n_dofs; j++)
               {
-                Ke(k + vector_n_dofs, j) += JxW[qp]*(div_vector_phi[j][qp]*scalar_phi[k][qp]);
+                Ke(k + vector_n_dofs, j) -= JxW[qp]*(div_vector_phi[j][qp]*scalar_phi[k][qp]);
               }
 
           // This is the end of the matrix summation loop
@@ -470,7 +476,7 @@ void assemble_divgrad(EquationSystems & es,
             // forcing function.
             for (unsigned int k = 0; k != scalar_n_dofs; k++)
               {
-                Fe(k + vector_n_dofs) += JxW[qp]*f*scalar_phi[k][qp];
+                Fe(k + vector_n_dofs) -= JxW[qp]*f*scalar_phi[k][qp];
               }
           }
 
@@ -571,7 +577,7 @@ void assemble_divgrad(EquationSystems & es,
 
                       // We use the penalty method to set the flux of the vector
                       // variable at the boundary, i.e. the RT vector boundary dof.
-                      const Real penalty = 1.e10;
+                      const Real penalty = 1.e8;
 
                       // A double loop to integrate the normal component of the
                       // vector test functions (i) against the normal component of
