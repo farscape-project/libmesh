@@ -77,9 +77,9 @@ ax_cv_[]_AC_LANG_ABBREV[]_openmp=unknown
 # Flags to try:  -fopenmp (gcc), -mp (SGI & PGI),
 #                -qopenmp (icc>=15), -openmp (icc),
 #                -xopenmp (Sun), -omp (Tru64),
-#                -qsmp=omp (AIX),
+#                -qsmp=omp (AIX), -Xcompiler=-fopenmp (nvcc),
 #                none
-ax_openmp_flags="-fopenmp -openmp -qopenmp -mp -xopenmp -omp -qsmp=omp none"
+ax_openmp_flags="-fopenmp -openmp -qopenmp -mp -xopenmp -omp -qsmp=omp -Xcompiler=-fopenmp none"
 if test "x$OPENMP_[]_AC_LANG_PREFIX[]FLAGS" != x; then
   ax_openmp_flags="$OPENMP_[]_AC_LANG_PREFIX[]FLAGS $ax_openmp_flags"
 fi
